@@ -5,6 +5,10 @@ A Quasar Project ctc
 ## Install the dependencies
 
 ```bash
+npm i -g @quasar/cli
+```
+
+```bash
 yarn
 # or
 npm install
