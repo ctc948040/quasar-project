@@ -123,7 +123,7 @@ const editedNode = ref({});
 // const editing = ref({});
 
 const currNode = ref({});
-const splitterModel = ref(20);
+const splitterModel = ref(30);
 
 const myBtn = ref(null);
 
