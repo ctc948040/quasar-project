@@ -17,7 +17,7 @@
         dense
         outlined
         v-if="editedNode[node.id]"
-        v-model="nodeinput"
+        v-model="nodeInput"
         @blur="doneEdit(node)"
         @keyup.enter="doneEdit(node)"
         @keyup.escape="cancelEdit(node)"
@@ -71,7 +71,7 @@ const props = defineProps([
 
 const emit = defineEmits(["deleteNode", "clickNode"]);
 const beforeEditCache = ref("");
-const nodeinput = ref("");
+const nodeInput = ref("");
 
 const expanded = ref(props.expanded);
 
@@ -88,7 +88,7 @@ const editNode = function (node) {
 const doneEdit = function (node, e) {
   // eslint-disable-next-line vue/no-mutating-props
   props.editedNode[node.id] = false;
-  node.label = nodeinput.value.trim();
+  node.label = nodeInput.value.trim();
 };
 
 const cancelEdit = function (node) {
@@ -98,7 +98,7 @@ const cancelEdit = function (node) {
 };
 
 const nodeFocus = function (node, e) {
-  nodeinput.value = node.label;
+  nodeInput.value = node.label;
 };
 
 const clickContext = function (mode, node) {
