@@ -49,10 +49,11 @@
             <!-- 트리 시작 -->
             <div class="q-gutter-sm q-mt-sm">
               <q-tree
+                ref="tree"
                 :nodes="treeList"
                 node-key="label"
                 selected-color="primary"
-                v-model:selected="selected"
+                v-model:selected.sync="selected"
                 v-model:ticked="ticked"
                 v-model:expanded="expanded"
                 default-expand-all
@@ -67,7 +68,9 @@
                     :grade="selectGrade"
                     :subject="selectSubject"
                     :expanded="expanded"
-                    :editing="editing"
+                    :editedNode="editedNode"
+                    @deleteNode="deleteNode"
+                    @clickNode="clickNode"
                   ></TreeNode>
                 </template>
               </q-tree>
@@ -108,6 +111,40 @@ import { useQuasar } from "quasar";
 import TreeNode from "components/TreeNode.vue";
 defineComponent({ name: "CategoryPage" });
 
+const $q = useQuasar();
+const tree = ref(null);
+const selectGrade = ref("m2"); //학년 선택박스 모델
+const selectSubject = ref("S1"); //과목 선택박스 모델
+const treeList = ref([]); //트리 노드 배열
+const expanded = ref([]); //확장노드 배열
+const selected = ref(null);
+const ticked = ref([]);
+const editedNode = ref({});
+// const editing = ref({});
+
+const currNode = ref({});
+const splitterModel = ref(20);
+
+const myBtn = ref(null);
+
+onMounted(() => {
+  // input.value.focus();
+});
+
+const myClickEvent = function (e) {
+  alert("aa");
+};
+
+const deleteNode = function (node) {
+  //delete node;
+  console.log("treeList", treeList.value);
+  console.log("deleteNode", node);
+};
+
+const clickNode = function (node) {
+  tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
+};
+
 const treeData = {
   m1: {
     S1: [
@@ -120,9 +157,7 @@ const treeData = {
           { label: "과학 2월 기출문제", id: "cg_m1S1012", lazy: true },
           { label: "과학 3월 기출문제", id: "cg_m1S1013", lazy: true },
         ],
-        handler: function (node) {
-          console.log(node);
-        },
+        handler: function (node) {},
       },
     ],
     S2: [
@@ -160,28 +195,20 @@ const treeData = {
           {
             label: "과학 1월 기출문제",
             id: "cg_m2S1_11000",
-            handler: function (node) {
-              console.log(node);
-            },
+            handler: function (node) {},
           },
           {
             label: "과학 2월 기출문제",
             id: "cg_m2S1_12000",
-            handler: function (node) {
-              console.log(node);
-            },
+            handler: function (node) {},
           },
           {
             label: "과학 3월 기출문제",
             id: "cg_m2S1_13000",
-            handler: function (node) {
-              console.log(node);
-            },
+            handler: function (node) {},
           },
         ],
-        handler: function (node) {
-          console.log(node);
-        },
+        handler: function (node) {},
       },
     ],
     S2: [
@@ -207,28 +234,6 @@ const treeData = {
       },
     ],
   },
-};
-
-const $q = useQuasar();
-const selectGrade = ref("m2"); //학년 선택박스 모델
-const selectSubject = ref("S1"); //과목 선택박스 모델
-const treeList = ref([]); //트리 노드 배열
-const expanded = ref([]); //확장노드 배열
-const selected = ref(null);
-const ticked = ref([]);
-const editing = ref({});
-
-const currNode = ref({});
-const splitterModel = ref(20);
-
-const myBtn = ref(null);
-
-onMounted(() => {
-  // input.value.focus();
-});
-
-const myClickEvent = function (e) {
-  alert("aa");
 };
 
 // watch(input1, async () => {
