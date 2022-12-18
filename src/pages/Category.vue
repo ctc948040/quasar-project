@@ -1,12 +1,12 @@
 <template>
   <div>
-    <q-splitter v-model="splitterModel" style="height: 90vh">
+    <q-splitter v-model="splitterModel" style="height: 94vh">
       <template v-slot:before>
-        <q-scroll-area style="height: 100%">
+        <q-scroll-area style="height: 100%; width: 100%">
           <div class="q-pa-sm">
-            <q-badge color="secondary" multi-line>
+            <!-- <q-badge color="secondary" multi-line>
               expanded: {{ expanded }} selectModel: {{ selectGrade }}"
-            </q-badge>
+            </q-badge> -->
 
             <!-- 등급 선택 박스 시작-->
             <q-select
@@ -55,6 +55,7 @@
                 selected-color="primary"
                 v-model:ticked="ticked"
                 v-model:expanded="expanded"
+                v-model:selected.sync="selected"
                 default-expand-all
                 tick-strategy="strict"
                 @lazy-load="onLazyLoad"
@@ -84,10 +85,15 @@
 
       <template v-slot:after>
         <div class="q-pa-md">
-          <div class="text-h4 q-mb-md">After</div>
-          <div v-for="n in 20" :key="n" class="q-my-md">
-            {{ n }}. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-            Quis praesentium cumque magnam odio iure quidem, quod illum numquam
+          <div class="q-mb-sm">
+            <q-icon name="format_list_bulleted" color="primary" size="16px" />
+            <span style="vertical-align: text-top">
+              카테고리 {{ !selected ? "" : " - [ " + selected + " ]" }}</span
+            >
+          </div>
+          <div class="q-my-sm">
+            . Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
+            praesentium cumque magnam odio iure quidem, quod illum numquam
             possimus obcaecati commodi minima assumenda consectetur culpa fuga
             nulla ullam. In, libero.
           </div>
@@ -95,7 +101,7 @@
       </template>
     </q-splitter>
   </div>
-  <button type="button" @click="myClickEvent" ref="myBtn">Click Me!</button>
+  <!-- <button type="button" @click="myClickEvent" ref="myBtn">Click Me!</button> -->
 </template>
 <style></style>
 <script setup>
@@ -149,6 +155,8 @@ const clickNode = function (node, isExtend) {
     //무조건 확장
     tree.value.setExpanded(node.label, true);
   }
+
+  selected.value = node.label;
 };
 
 const treeData = {

@@ -1,5 +1,9 @@
 <template>
-  <div class="row items-center" @click.stop="clickNode(node)">
+  <div
+    class="row items-center"
+    @click.stop="clickNode(node)"
+    style="white-space: nowrap; display: contents"
+  >
     <!--@click.stop.prevent="" -->
     <q-avatar v-if="node.avatar" class="q-mr-sm">
       <img :src="node.avatar" />
