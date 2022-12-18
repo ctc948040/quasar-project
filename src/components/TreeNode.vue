@@ -1,5 +1,5 @@
 <template>
-  <div class="row items-center" @click="clickNode(node)">
+  <div class="row items-center" @click.stop="clickNode(node)">
     <!--@click.stop.prevent="" -->
     <q-avatar v-if="node.avatar" class="q-mr-sm">
       <img :src="node.avatar" />
@@ -28,7 +28,9 @@
       />
       <!--  -->
       <!-- @focus="nodeFocus(node, $event)" -->
-      <span v-else @dblclick.stop="editNode(node)">{{ node.label }}</span>
+      <span v-else @dblclick.stop="editNode(node)" class="noselect">{{
+        node.label
+      }}</span>
     </div>
     <q-menu context-menu>
       <q-list dense style="min-width: 100px">
@@ -58,6 +60,7 @@
 </template>
 
 <script setup>
+/* eslint-disable vue/no-mutating-props */
 import { ref, computed, nextTick } from "vue";
 import { uid } from "quasar";
 
@@ -75,24 +78,25 @@ const nodeInput = ref("");
 
 const expanded = ref(props.expanded);
 
-const clickNode = function (node) {
-  emit("clickNode", node);
+const clickNode = function (node, isExtend) {
+  isExtend = isExtend || false;
+
+  if (props.editedNode[node.id]) return;
+
+  emit("clickNode", node, isExtend);
 };
 
 const editNode = function (node) {
-  // eslint-disable-next-line vue/no-mutating-props
   props.editedNode[node.id] = true;
   beforeEditCache.value = node.label;
 };
 
 const doneEdit = function (node, e) {
-  // eslint-disable-next-line vue/no-mutating-props
   props.editedNode[node.id] = false;
   node.label = nodeInput.value.trim();
 };
 
 const cancelEdit = function (node) {
-  // eslint-disable-next-line vue/no-mutating-props
   props.editedNode[node.id] = false;
   node.label = beforeEditCache.value;
 };
@@ -107,7 +111,7 @@ const clickContext = function (mode, node) {
       node.children = [];
     }
     // eslint-disable-next-line vue/no-mutating-props
-    expanded.value.push(node.label);
+    // expanded.value.push(node.label);
 
     if (!node.avatar && !node.icon) {
       node.icon = "folder";
@@ -124,6 +128,7 @@ const clickContext = function (mode, node) {
     };
 
     children.push(m);
+    clickNode(node, true); //노드를 확장 시킨다.
     setTimeout(() => editNode(m), 100);
   } else if (mode == "modify") {
     setTimeout(() => editNode(node), 100);
@@ -133,4 +138,14 @@ const clickContext = function (mode, node) {
 };
 </script>
 
-<style></style>
+<style>
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+</style>

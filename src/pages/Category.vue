@@ -53,7 +53,6 @@
                 :nodes="treeList"
                 node-key="label"
                 selected-color="primary"
-                v-model:selected.sync="selected"
                 v-model:ticked="ticked"
                 v-model:expanded="expanded"
                 default-expand-all
@@ -61,6 +60,7 @@
                 @lazy-load="onLazyLoad"
                 accordion
               >
+                <!-- v-model:selected.sync="selected" -->
                 <!-- //v-model:selected="selected" //v-model:expanded="expandedKeys" -->
                 <template v-slot:default-header="prop">
                   <TreeNode
@@ -141,8 +141,14 @@ const deleteNode = function (node) {
   console.log("deleteNode", node);
 };
 
-const clickNode = function (node) {
-  tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
+const clickNode = function (node, isExtend) {
+  if (!isExtend) {
+    //토글
+    tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
+  } else {
+    //무조건 확장
+    tree.value.setExpanded(node.label, true);
+  }
 };
 
 const treeData = {
