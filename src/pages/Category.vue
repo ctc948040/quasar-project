@@ -117,9 +117,9 @@ const selectGrade = ref("m2"); //학년 선택박스 모델
 const selectSubject = ref("S1"); //과목 선택박스 모델
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
-const selected = ref(null);
-const ticked = ref([]);
-const editedNode = ref({});
+const selected = ref(null); //클릭노드
+const ticked = ref([]); //체크 노드
+const editedNode = ref({}); //편집노드
 // const editing = ref({});
 
 const currNode = ref({});
