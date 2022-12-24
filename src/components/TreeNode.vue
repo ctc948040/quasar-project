@@ -65,7 +65,7 @@
 
 <script setup>
 /* eslint-disable vue/no-mutating-props */
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, inject } from "vue";
 import { uid } from "quasar";
 
 const props = defineProps([
@@ -75,7 +75,7 @@ const props = defineProps([
   "subject",
   "editedNode",
 ]);
-
+const bus = inject("bus"); // inside setup()
 const emit = defineEmits(["deleteNode", "clickNode"]);
 const beforeEditCache = ref("");
 const nodeInput = ref("");
@@ -138,6 +138,7 @@ const clickContext = function (mode, node) {
     setTimeout(() => editNode(node), 100);
   } else if (mode == "remove") {
     emit("deleteNode", node);
+    bus.emit("some-event", "arg1 value", "arg2 value", "arg3 value");
   }
 };
 </script>

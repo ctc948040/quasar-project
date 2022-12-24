@@ -112,11 +112,12 @@ import {
   watchEffect,
   onMounted,
   nextTick,
+  inject,
 } from "vue";
 import { useQuasar } from "quasar";
 import TreeNode from "components/TreeNode.vue";
 defineComponent({ name: "CategoryPage" });
-
+const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
 const selectGrade = ref("m2"); //학년 선택박스 모델
@@ -132,6 +133,39 @@ const currNode = ref({});
 const splitterModel = ref(30);
 
 const myBtn = ref(null);
+
+function fetchUser() {
+  var url = "https://jsonplaceholder.typicode.com/users/1";
+  return fetch(url).then(function (response) {
+    return response.json();
+  });
+}
+
+function fetchTodo() {
+  var url = "https://jsonplaceholder.typicode.com/todos/1";
+  return fetch(url).then(function (response) {
+    return response.json();
+  });
+}
+
+async function logTodoTitle() {
+  console.log("logTodoTitle================");
+  var user = await fetchUser();
+  console.log(user);
+  if (user.id === 1) {
+    var todo = await fetchTodo();
+    console.log(todo.title); // delectus aut autem
+  }
+}
+
+console.log("[start] =====================");
+logTodoTitle();
+console.log("[end] =====================");
+
+//이벤트 버스 사용 예제
+bus.on("some-event", (arg1, arg2, arg3) => {
+  console.log(arg1, arg2, arg3);
+});
 
 onMounted(() => {
   // input.value.focus();
