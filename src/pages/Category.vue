@@ -171,10 +171,6 @@ onMounted(() => {
   // input.value.focus();
 });
 
-const myClickEvent = function (e) {
-  alert("aa");
-};
-
 const deleteNode = function (node) {
   //delete node;
   console.log("treeList", treeList.value);
@@ -331,31 +327,6 @@ const onLazyLoad = function ({ node, key, done, fail }) {
     done([{ label: `${label}.1` }]);
   }, 100);
 };
-
-// return {
-//   nodeupdate: nodeupdate,
-//   nodeclick: nodeclick,
-//   editing: editing,
-//   myClickEvent: myClickEvent,
-//   myBtn: myBtn,
-//   input: input,
-//   onLazyLoad: onLazyLoad,
-//   input1: input1,
-//   send: send,
-//   addNode: addNode,
-//   updateSelect: updateSelect,
-//   updateSubjectSelect: updateSubjectSelect,
-//   splitterModel: ref(20), // start at 50%
-//   gradeOptions: gradeOptions,
-//   subjectOptions: subjectOptions,
-//   selectModel: selectModel,
-//   selectSubjectModel: selectSubjectModel,
-//   expanded: expanded,
-//   message: "Hello Vue!",
-//   treeList: treeList,
-//   selected: selected,
-//   ticked: ticked,
-// };
 
 const gradeOptions = [
   {
