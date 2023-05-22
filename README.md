@@ -1,6 +1,6 @@
-# Quasar App (quasar-project)
+# HSMS App (HSMS-project)
 
-A Quasar Project ctc
+A HSMS Project ctc
 
 ## Install the dependencies
 

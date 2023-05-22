@@ -120,8 +120,8 @@ defineComponent({ name: "CategoryPage" });
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
-const selectGrade = ref("m2"); //학년 선택박스 모델
-const selectSubject = ref("S1"); //과목 선택박스 모델
+const selectGrade = ref("COMGRDM1"); //학년 선택박스 모델
+const selectSubject = ref("COMSBJ01"); //과목 선택박스 모델
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
 const selected = ref(null); //클릭노드
@@ -134,33 +134,18 @@ const splitterModel = ref(30);
 
 const myBtn = ref(null);
 
-function fetchUser() {
-  var url = "https://jsonplaceholder.typicode.com/users/1";
-  return fetch(url).then(function (response) {
-    return response.json();
+function fetchCategory(id,grade,subject){
+
+  let parentCtgId = id?"&parentCtgId="+id:"";
+
+  const uri = "/category?gradeCode=" + grade + "&subjectCode=" + subject+parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
+  return fetch(uri, { method: "get" })
+      .then((response) => response.json())
+      .then((response) => {
+        return response.data;
   });
 }
 
-function fetchTodo() {
-  var url = "https://jsonplaceholder.typicode.com/todos/1";
-  return fetch(url).then(function (response) {
-    return response.json();
-  });
-}
-
-async function logTodoTitle() {
-  console.log("logTodoTitle================");
-  var user = await fetchUser();
-  console.log(user);
-  if (user.id === 1) {
-    var todo = await fetchTodo();
-    console.log(todo.title); // delectus aut autem
-  }
-}
-
-console.log("[start] =====================");
-logTodoTitle();
-console.log("[end] =====================");
 
 //이벤트 버스 사용 예제
 bus.on("some-event", (arg1, arg2, arg3) => {
@@ -189,96 +174,6 @@ const clickNode = function (node, isExtend) {
   selected.value = node.label;
 };
 
-const treeData = {
-  m1: {
-    S1: [
-      {
-        label: "중학교 1학년 과학 기출문제",
-        id: "cg_m1S101",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          { label: "과학 1월 기출문제", id: "cg_m1S1011", lazy: true },
-          { label: "과학 2월 기출문제", id: "cg_m1S1012", lazy: true },
-          { label: "과학 3월 기출문제", id: "cg_m1S1013", lazy: true },
-        ],
-        handler: function (node) {},
-      },
-    ],
-    S2: [
-      {
-        label: "중학교 1학년 수학 기출문제",
-        id: "cg_m1S201",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          { label: "수학 1월 기출문제", id: "cg_m1S2011", lazy: true },
-          { label: "수학 2월 기출문제", id: "cg_m1S2012", lazy: true },
-          { label: "수학 3월 기출문제", id: "cg_m1S2013", lazy: true },
-        ],
-      },
-    ],
-    S3: [
-      {
-        label: "중학교 1학년 영어 기출문제",
-        id: "cg_m1S301",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          { label: "영어 1월 기출문제", id: "cg_m1S2011", lazy: true },
-          { label: "영어 2월 기출문제", id: "cg_m1S2012", lazy: true },
-          { label: "영어 3월 기출문제", id: "cg_m1S2013", lazy: true },
-        ],
-      },
-    ],
-  },
-  m2: {
-    S1: [
-      {
-        label: "중학교 2학년 과학 기출문제",
-        id: "cg_m2S1_10000",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          {
-            label: "과학 1월 기출문제",
-            id: "cg_m2S1_11000",
-            handler: function (node) {},
-          },
-          {
-            label: "과학 2월 기출문제",
-            id: "cg_m2S1_12000",
-            handler: function (node) {},
-          },
-          {
-            label: "과학 3월 기출문제",
-            id: "cg_m2S1_13000",
-            handler: function (node) {},
-          },
-        ],
-        handler: function (node) {},
-      },
-    ],
-    S2: [
-      {
-        label: "중학교 2학년 수학 기출문제",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          { label: "수학 1월 기출문제", lazy: true },
-          { label: "수학 2월 기출문제", lazy: true },
-          { label: "수학 3월 기출문제", lazy: true },
-        ],
-      },
-    ],
-    S3: [
-      {
-        label: "중학교 2학년 영어 기출문제",
-        avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-        children: [
-          { label: "영어 1월 기출문제", lazy: true },
-          { label: "영어 2월 기출문제", lazy: true },
-          { label: "영어 3월 기출문제", lazy: true },
-        ],
-      },
-    ],
-  },
-};
 
 // watch(input1, async () => {
 //   const data = input1.value;
@@ -292,10 +187,15 @@ const treeData = {
 //   }, 1);
 // });
 
-const initTree = function (v1, v2) {
-  var m = treeData[v1] || {};
-  treeList.value = m[v2] || [];
-  //expandedKeys.value = [m[v2][0].label || ""];
+const initTree = async function (v1, v2) {
+  // var m = treeData[v1] || {};
+  console.log(v1, v2);
+
+  var data = await fetchCategory("",v1,v2);
+
+  treeList.value = data || [];
+  expanded.value = [data[0].label || ""]; 
+
 };
 
 initTree(selectGrade.value, selectSubject.value); //트리 데이터 초기화
@@ -313,60 +213,57 @@ const send = function () {
   // jQuery("#node_div").hide();
 };
 
-const onLazyLoad = function ({ node, key, done, fail }) {
-  // call fail() if any error occurs
-  console.log(done);
-  setTimeout(() => {
-    // simulate loading and setting an empty node
-    if (key.indexOf("Lazy load empty") > -1) {
-      done([]);
-      return;
-    }
+const onLazyLoad = async function ({ node, key, done, fail }) {
+  
+    var data = await fetchCategory(node.id,selectGrade.value, selectSubject.value);
 
-    const label = node.label;
-    done([{ label: `${label}.1` }]);
-  }, 100);
+    done(data);
+
 };
 
 const gradeOptions = [
   {
-    id: "m1",
+    id: "COMGRDM1",
     desc: "중1",
   },
   {
-    id: "m2",
+    id: "COMGRDM2",
     desc: "중2",
   },
   {
-    id: "m3",
+    id: "COMGRDM3",
     desc: "중3",
   },
   {
-    id: "h1",
+    id: "COMGRDH1",
     desc: "고1",
   },
   {
-    id: "h2",
+    id: "COMGRDH2",
     desc: "고2",
   },
   {
-    id: "h3",
+    id: "COMGRDH3",
     desc: "고3",
   },
 ];
 
 const subjectOptions = [
   {
-    id: "S1",
+    id: "COMSBJ01",
     desc: "과학",
   },
   {
-    id: "S2",
+    id: "COMSBJ02",
     desc: "수학",
   },
   {
-    id: "S3",
+    id: "COMSBJ03",
     desc: "영어",
+  },
+  {
+    id: "COMSBJ04",
+    desc: "국어",
   },
 ];
 </script>

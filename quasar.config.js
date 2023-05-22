@@ -80,6 +80,13 @@ module.exports = configure(function (ctx) {
       },
       port: 8080,
       open: true, // opens browser window automatically
+      proxy: {
+        // /api 및 /api/* 요청에 대해 프록시 설정
+            '/category': {
+              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              changeOrigin: true,
+            },
+          },
     },
 
     // https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-framework
@@ -144,9 +151,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Quasar App`,
-        short_name: `Quasar App`,
-        description: `A Quasar Project`,
+        name: `HSMS App`,
+        short_name: `HSMS App`,
+        description: `A HSMS Project`,
         display: "standalone",
         orientation: "portrait",
         background_color: "#ffffff",
