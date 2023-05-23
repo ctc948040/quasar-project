@@ -64,7 +64,7 @@
                 <!-- v-model:selected.sync="selected" -->
                 <!-- //v-model:selected="selected" //v-model:expanded="expandedKeys" -->
                 <template v-slot:default-header="prop">
-                  <TreeNode
+                  <TreeNodeComponent
                     :node="prop.node"
                     :grade="selectGrade"
                     :subject="selectSubject"
@@ -72,7 +72,7 @@
                     :editedNode="editedNode"
                     @deleteNode="deleteNode"
                     @clickNode="clickNode"
-                  ></TreeNode>
+                  ></TreeNodeComponent>
                 </template>
               </q-tree>
             </div>
@@ -115,7 +115,7 @@ import {
   inject,
 } from "vue";
 import { useQuasar } from "quasar";
-import TreeNode from "components/TreeNode.vue";
+import TreeNodeComponent from "components/TreeNodeComponent.vue";
 defineComponent({ name: "CategoryPage" });
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
@@ -134,18 +134,17 @@ const splitterModel = ref(30);
 
 const myBtn = ref(null);
 
-function fetchCategory(id,grade,subject){
+function fetchCategory(id, grade, subject) {
+  let parentCtgId = id ? "&parentCtgId=" + id : "";
 
-  let parentCtgId = id?"&parentCtgId="+id:"";
-
-  const uri = "/category?gradeCode=" + grade + "&subjectCode=" + subject+parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
+  const uri =
+    "/category?gradeCode=" + grade + "&subjectCode=" + subject + parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
   return fetch(uri, { method: "get" })
-      .then((response) => response.json())
-      .then((response) => {
-        return response.data;
-  });
+    .then((response) => response.json())
+    .then((response) => {
+      return response.data;
+    });
 }
-
 
 //이벤트 버스 사용 예제
 bus.on("some-event", (arg1, arg2, arg3) => {
@@ -174,7 +173,6 @@ const clickNode = function (node, isExtend) {
   selected.value = node.label;
 };
 
-
 // watch(input1, async () => {
 //   const data = input1.value;
 
@@ -191,11 +189,10 @@ const initTree = async function (v1, v2) {
   // var m = treeData[v1] || {};
   console.log(v1, v2);
 
-  var data = await fetchCategory("",v1,v2);
+  var data = await fetchCategory("", v1, v2);
 
   treeList.value = data || [];
-  expanded.value = [data[0].label || ""]; 
-
+  expanded.value = [data[0].label || ""];
 };
 
 initTree(selectGrade.value, selectSubject.value); //트리 데이터 초기화
@@ -214,11 +211,13 @@ const send = function () {
 };
 
 const onLazyLoad = async function ({ node, key, done, fail }) {
-  
-    var data = await fetchCategory(node.id,selectGrade.value, selectSubject.value);
+  var data = await fetchCategory(
+    node.id,
+    selectGrade.value,
+    selectSubject.value
+  );
 
-    done(data);
-
+  done(data);
 };
 
 const gradeOptions = [

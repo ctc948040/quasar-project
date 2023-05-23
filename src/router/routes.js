@@ -7,7 +7,7 @@ const routes = [
   {
     path: "/Category",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/Category.vue") }],
+    children: [{ path: "", component: () => import("pages/CategoryPage.vue") }],
   },
   {
     path: "/GridDemo",
