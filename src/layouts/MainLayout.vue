@@ -18,15 +18,26 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header> <a href="#/">Home</a> </q-item-label>
+      <div class="q-pa-md">
+        <!-- <q-item-label header> <a href="#/">Home</a> </q-item-label> -->
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
+        <!-- <q-item clickable v-ripple active-class="bg-teal-1 text-grey-8">
+          <q-item-section avatar>
+            <q-icon name="home" color="primary" />
+          </q-item-section>
+
+          <q-item-section>Home</q-item-section>
+        </q-item> -->
+
+        <q-list separator padding class="text-secondary">
+          <EssentialLinkComponent
+            v-for="link in essentialLinks"
+            :key="link.title"
+            v-bind="link"
+            :activeMenu="activeMenu"
+          />
+        </q-list>
+      </div>
     </q-drawer>
     <q-page-container>
       <router-view />
@@ -36,22 +47,32 @@
 
 <script>
 import { defineComponent, ref } from "vue";
-import EssentialLink from "components/EssentialLink.vue";
+import EssentialLinkComponent from "src/components/EssentialLinkComponent.vue";
 
 const linksList = [
+  {
+    title: "Home",
+    caption: "",
+    icon: "home",
+    link: "#/",
+    target: "_self",
+    name: "home",
+  },
   {
     title: "카테고리설정",
     caption: "카테고리를 설정합니다.",
     icon: "school",
     link: "#/Category",
     target: "_self",
+    name: "category",
   },
   {
     title: "그리드 데모",
     caption: "동적 그리드 그리기",
-    icon: "grid",
+    icon: "chat",
     link: "#/GridDemo",
     target: "_self",
+    name: "grid",
   },
   // {
   //   title: "Docs",
@@ -101,14 +122,17 @@ export default defineComponent({
   name: "MainLayout",
 
   components: {
-    EssentialLink,
+    EssentialLinkComponent,
   },
 
   setup() {
     const leftDrawerOpen = ref(false);
 
+    const activeMenu = ref({ menu: "home" }); //active menu
+
     return {
       essentialLinks: linksList,
+      activeMenu,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
