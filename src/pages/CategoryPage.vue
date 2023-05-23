@@ -84,26 +84,61 @@
       <template v-slot:separator> </template>
 
       <template v-slot:after>
-        <div class="q-pa-md">
+        <div
+          class="q-pa-md"
+          id="scroll-target-id"
+          style="max-height: 100%; overflow: auto"
+        >
           <div class="q-mb-sm">
             <q-icon name="format_list_bulleted" color="primary" size="16px" />
             <span style="vertical-align: text-top">
               카테고리 {{ !selected ? "" : " - [ " + selected + " ]" }}</span
             >
           </div>
-          <div class="q-my-sm">
-            . Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quis
-            praesentium cumque magnam odio iure quidem, quod illum numquam
-            possimus obcaecati commodi minima assumenda consectetur culpa fuga
-            nulla ullam. In, libero.
-          </div>
+          <!-- <div class="q-pa-md"> -->
+          <q-infinite-scroll
+            @load="onLoad1"
+            :offset="250"
+            scroll-target="#scroll-target-id"
+          >
+            <div class="q-gutter-md row content-start justify-start">
+              <q-card class="my-card" v-for="mode in fitModes" :key="mode">
+                <q-img src="https://picsum.photos/500/300" />
+                <q-item>
+                  <q-item-section avatar>
+                    <q-avatar color="primary" text-color="white" size="md"
+                      >중1</q-avatar
+                    >
+                  </q-item-section>
+
+                  <q-item-section>
+                    <q-item-label>Title111</q-item-label>
+                    <q-item-label caption>Subhead</q-item-label>
+                  </q-item-section>
+                  <q-space />
+                  <q-card-actions>
+                    <q-btn flat round color="red" icon="favorite" />
+                    <q-btn flat round color="accent" icon="bookmark" />
+                    <!-- <q-btn flat round color="primary" icon="share" /> -->
+                    <q-btn flat round dense icon="more_vert" />
+                  </q-card-actions>
+                </q-item>
+              </q-card>
+            </div>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
+          <!-- </div> -->
         </div>
       </template>
     </q-splitter>
   </div>
   <!-- <button type="button" @click="myClickEvent" ref="myBtn">Click Me!</button> -->
 </template>
-<style></style>
+
 <script setup>
 import {
   defineComponent,
@@ -127,12 +162,21 @@ const expanded = ref([]); //확장노드 배열
 const selected = ref(null); //클릭노드
 const ticked = ref([]); //체크 노드
 const editedNode = ref({}); //편집노드
+const fitModes = ref([{}, {}, {}, {}, {}, {}, {}, {}]);
+
 // const editing = ref({});
 
 const currNode = ref({});
-const splitterModel = ref(30);
+const splitterModel = ref(20);
 
 const myBtn = ref(null);
+
+const onLoad1 = function (index, done) {
+  setTimeout(() => {
+    fitModes.value.push({}, {}, {}, {});
+    done();
+  }, 1000);
+};
 
 function fetchCategory(id, grade, subject) {
   let parentCtgId = id ? "&parentCtgId=" + id : "";
@@ -152,7 +196,7 @@ bus.on("some-event", (arg1, arg2, arg3) => {
 });
 
 onMounted(() => {
-  // input.value.focus();
+  bus.emit("toggleLeftDrawer", false);
 });
 
 const deleteNode = function (node) {
@@ -266,3 +310,8 @@ const subjectOptions = [
   },
 ];
 </script>
+<style lang="sass" scoped>
+.my-card
+  width: 100%
+  max-width: 345px
+</style>

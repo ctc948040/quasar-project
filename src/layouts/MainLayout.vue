@@ -19,16 +19,6 @@
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <div class="q-pa-md">
-        <!-- <q-item-label header> <a href="#/">Home</a> </q-item-label> -->
-
-        <!-- <q-item clickable v-ripple active-class="bg-teal-1 text-grey-8">
-          <q-item-section avatar>
-            <q-icon name="home" color="primary" />
-          </q-item-section>
-
-          <q-item-section>Home</q-item-section>
-        </q-item> -->
-
         <q-list separator padding class="text-secondary">
           <EssentialLinkComponent
             v-for="link in essentialLinks"
@@ -45,8 +35,18 @@
   </q-layout>
 </template>
 
+<style lang="sass">
+.example-row-equal-width
+  .row > div
+    padding: 10px 15px
+    background: rgba(#999,.15)
+    border: 1px solid rgba(#999,.2)
+  .row + .row
+    margin-top: 1rem
+</style>
+
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, inject } from "vue";
 import EssentialLinkComponent from "src/components/EssentialLinkComponent.vue";
 
 const linksList = [
@@ -129,6 +129,13 @@ export default defineComponent({
     const leftDrawerOpen = ref(false);
 
     const activeMenu = ref({ menu: "home" }); //active menu
+
+    const bus = inject("bus"); // inside setup()
+
+    //이벤트 버스 사용 예제
+    bus.on("toggleLeftDrawer", (arg1) => {
+      leftDrawerOpen.value = arg1;
+    });
 
     return {
       essentialLinks: linksList,

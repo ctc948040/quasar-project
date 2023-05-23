@@ -42,5 +42,5 @@ const clickMenu = function (name) {
 <style lang="sass">
 .my-menu-link
   color: white
-  background: #F2C037
+  background: #f2c037
 </style>
