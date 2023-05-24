@@ -55,7 +55,7 @@
                 selected-color="primary"
                 v-model:ticked="ticked"
                 v-model:expanded="expanded"
-                v-model:selected.sync="selected"
+                v-model:selected="selected"
                 default-expand-all
                 tick-strategy="strict"
                 @lazy-load="onLazyLoad"
@@ -103,7 +103,12 @@
           >
             <div class="q-gutter-md row content-start justify-start">
               <q-card class="my-card" v-for="mode in fitModes" :key="mode">
-                <q-img src="https://picsum.photos/500/300" />
+                <q-item-section style="height: 200px">
+                  <q-img
+                    src="/file/download?fileId=FIL11EDF9FA93A52988AAB90242AC110002"
+                    fit="contain"
+                  />
+                </q-item-section>
                 <q-item>
                   <q-item-section avatar>
                     <q-avatar color="primary" text-color="white" size="md"
@@ -155,7 +160,7 @@ defineComponent({ name: "CategoryPage" });
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
-const selectGrade = ref("COMGRDM1"); //학년 선택박스 모델
+const selectGrade = ref("COMGRDM2"); //학년 선택박스 모델
 const selectSubject = ref("COMSBJ01"); //과목 선택박스 모델
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
@@ -182,7 +187,11 @@ function fetchCategory(id, grade, subject) {
   let parentCtgId = id ? "&parentCtgId=" + id : "";
 
   const uri =
-    "/category?gradeCode=" + grade + "&subjectCode=" + subject + parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
+    "/category/selectListCategory?gradeCode=" +
+    grade +
+    "&subjectCode=" +
+    subject +
+    parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
   return fetch(uri, { method: "get" })
     .then((response) => response.json())
     .then((response) => {
@@ -215,6 +224,11 @@ const clickNode = function (node, isExtend) {
   }
 
   selected.value = node.label;
+  searchQst(node);
+};
+
+const searchQst = function (node) {
+  console.info("searchQst", node);
 };
 
 // watch(input1, async () => {
@@ -237,6 +251,10 @@ const initTree = async function (v1, v2) {
 
   treeList.value = data || [];
   expanded.value = [data[0].label || ""];
+
+  selected.value = data[0].label;
+
+  searchQst(data[0]);
 };
 
 initTree(selectGrade.value, selectSubject.value); //트리 데이터 초기화
@@ -314,4 +332,5 @@ const subjectOptions = [
 .my-card
   width: 100%
   max-width: 345px
+  // max-height: 245px
 </style>

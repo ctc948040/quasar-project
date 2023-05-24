@@ -82,7 +82,15 @@ module.exports = configure(function (ctx) {
       open: true, // opens browser window automatically
       proxy: {
         // /api 및 /api/* 요청에 대해 프록시 설정
-            '/category': {
+            '/category/*': {
+              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              changeOrigin: true,
+            },
+            '/file/*': {
+              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              changeOrigin: true,
+            },
+            '/question/*': {
               target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
