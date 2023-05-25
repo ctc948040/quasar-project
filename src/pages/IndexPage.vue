@@ -5,6 +5,37 @@
         <q-scroll-area style="height: 100%">
           <div class="q-pa-md">
             <div class="text-h4 q-mb-md">Before</div>
+
+            <div class="q-pa-md">
+              <div class="q-col-gutter-md row items-start">
+                <div class="col-6">
+                  <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+                    1.
+                  </q-img>
+                </div>
+
+                <div class="col-6">
+                  <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+                    <div class="absolute-top text-center">Caption</div>
+                  </q-img>
+                </div>
+
+                <div class="col-6">
+                  <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+                    <q-chip transparency>1.</q-chip>
+                  </q-img>
+                </div>
+
+                <div class="col-6">
+                  <q-img src="https://cdn.quasar.dev/img/parallax2.jpg">
+                    <div class="absolute-full text-subtitle2 flex flex-center">
+                      11
+                    </div>
+                  </q-img>
+                </div>
+              </div>
+            </div>
+
             <div v-for="n in 20" :key="n" class="q-my-md">
               {{ n }}. Lorem ipsum dolor sit, amet consectetur adipisicing elit.
               Quis praesentium cumque magnam odio iure quidem, quod illum
@@ -80,8 +111,27 @@
       </q-page-container>
     </q-layout>
   </div>
+  <div class="q-pa-md">
+    <div class="row justify-center q-gutter-sm">
+      <q-intersection v-for="index in 60" :key="index" class="example-item">
+        <q-card flat bordered class="q-ma-sm">
+          <img src="https://cdn.quasar.dev/img/mountains.jpg" />
+
+          <q-card-section>
+            <div class="text-h6">Card #{{ index }}</div>
+            <div class="text-subtitle2">by John Doe</div>
+          </q-card-section>
+        </q-card>
+      </q-intersection>
+    </div>
+  </div>
 </template>
 
+<style lang="sass" scoped>
+.example-item
+  height: 290px
+  width: 290px
+</style>
 <script>
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";

@@ -4,9 +4,10 @@
       <template v-slot:before>
         <q-scroll-area style="height: 100%; width: 100%">
           <div class="q-pa-sm">
-            <!-- <q-badge color="secondary" multi-line>
-              expanded: {{ expanded }} selectModel: {{ selectGrade }}"
-            </q-badge> -->
+            <q-badge color="secondary" multi-line>
+              expanded: {{ expanded }} selectModel: {{ selectGrade }}
+              {{ selectSubject }}
+            </q-badge>
 
             <!-- 등급 선택 박스 시작-->
             <q-select
@@ -16,11 +17,10 @@
               option-label="desc"
               option-disable="inactive"
               style="display: contents"
-              emit-value
-              map-options
               @update:model-value="updateSelect"
               label="학년"
             >
+              <!-- emit-value -->
               <template v-slot:prepend>
                 <q-icon name="school" color="primary" @click.stop.prevent />
               </template>
@@ -36,8 +36,6 @@
               option-disable="inactive"
               style="display: contents"
               class="q-ml-sm q-my-sm"
-              emit-value
-              map-options
               @update:model-value="updateSubjectSelect"
               label="과목"
             >
@@ -66,8 +64,8 @@
                 <template v-slot:default-header="prop">
                   <TreeNodeComponent
                     :node="prop.node"
-                    :grade="selectGrade"
-                    :subject="selectSubject"
+                    :grade="selectGrade.id"
+                    :subject="selectSubject.id"
                     :expanded="expanded"
                     :editedNode="editedNode"
                     @deleteNode="deleteNode"
@@ -95,39 +93,54 @@
               카테고리 {{ !selected ? "" : " - [ " + selected + " ]" }}</span
             >
           </div>
-          <!-- <div class="q-pa-md"> -->
+
           <q-infinite-scroll
             @load="onLoad1"
-            :offset="250"
+            :offset="offset1"
             scroll-target="#scroll-target-id"
           >
-            <div class="q-gutter-md row content-start justify-start">
-              <q-card class="my-card" v-for="mode in fitModes" :key="mode">
-                <q-item-section style="height: 200px">
+            <div class="q-gutter-md row content-start justify-center">
+              <q-card
+                class="my-card"
+                v-for="item in questList"
+                :key="item.qstFileId"
+              >
+                <q-item-section style="height: 400px">
                   <q-img
-                    src="/file/download?fileId=FIL11EDF9FA93A52988AAB90242AC110002"
+                    height="100%"
+                    :src="`/file/download?fileId=${item.qstFileId}`"
                     fit="contain"
                   />
                 </q-item-section>
+                <q-separator />
                 <q-item>
                   <q-item-section avatar>
-                    <q-avatar color="primary" text-color="white" size="md"
-                      >중1</q-avatar
-                    >
+                    <q-avatar>
+                      <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                    </q-avatar>
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label>Title111</q-item-label>
-                    <q-item-label caption>Subhead</q-item-label>
+                    <q-item-label style="word-break: break-all"
+                      >Title111111111111111111111111111111111111222222222222222222222222222222222222222221111111</q-item-label
+                    >
+                    <q-item-label caption> Subhead </q-item-label>
                   </q-item-section>
-                  <q-space />
-                  <q-card-actions>
-                    <q-btn flat round color="red" icon="favorite" />
-                    <q-btn flat round color="accent" icon="bookmark" />
-                    <!-- <q-btn flat round color="primary" icon="share" /> -->
-                    <q-btn flat round dense icon="more_vert" />
-                  </q-card-actions>
                 </q-item>
+                <q-separator />
+                <!-- <q-card-actions>
+                  <q-btn flat round icon="event" />
+                  <q-btn flat> 7:30PM </q-btn>
+                  <q-btn flat color="primary"> Reserve </q-btn>
+                </q-card-actions> -->
+
+                <q-card-actions>
+                  <q-space></q-space>
+                  <!-- <q-btn flat round color="red" icon="favorite" /> -->
+                  <q-btn flat round color="accent" icon="add" />
+                  <!-- <q-btn flat round color="primary" icon="share" /> -->
+                  <q-btn flat round dense icon="more_vert" />
+                </q-card-actions>
               </q-card>
             </div>
             <template v-slot:loading>
@@ -136,14 +149,18 @@
               </div>
             </template>
           </q-infinite-scroll>
-          <!-- </div> -->
         </div>
       </template>
     </q-splitter>
   </div>
   <!-- <button type="button" @click="myClickEvent" ref="myBtn">Click Me!</button> -->
 </template>
-
+<style lang="sass" scoped>
+.my-card
+  width: 345px
+  max-width: 350px
+  // max-height: 245px
+</style>
 <script setup>
 import {
   defineComponent,
@@ -160,27 +177,37 @@ defineComponent({ name: "CategoryPage" });
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
-const selectGrade = ref("COMGRDM2"); //학년 선택박스 모델
-const selectSubject = ref("COMSBJ01"); //과목 선택박스 모델
+const selectGrade = ref({ id: "COMGRDM2", desc: "중2" }); //학년 선택박스 모델
+const selectSubject = ref({ id: "COMSBJ01", desc: "과학" }); //과목 선택박스 모델
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
 const selected = ref(null); //클릭노드
 const ticked = ref([]); //체크 노드
 const editedNode = ref({}); //편집노드
-const fitModes = ref([{}, {}, {}, {}, {}, {}, {}, {}]);
+const questList = ref([
+  { qstFileId: "FIL11EDF9FA9289A8DCAAB90242AC110002" },
+  { qstFileId: "FIL11EDF9FA92A36AA4AAB90242AC110002" },
+  { qstFileId: "FIL11EDF9FA92B6BD29AAB90242AC110002" },
+  { qstFileId: "FIL11EDF9FA92C3E4EEAAB90242AC110002" },
+]);
+const imgCheck = ref([]);
 
 // const editing = ref({});
 
 const currNode = ref({});
 const splitterModel = ref(20);
 
-const myBtn = ref(null);
+const offset1 = ref(350);
 
 const onLoad1 = function (index, done) {
-  setTimeout(() => {
-    fitModes.value.push({}, {}, {}, {});
-    done();
-  }, 1000);
+  questList.value.push(
+    { qstFileId: "FIL11EDF9FA92D48689AAB90242AC110002" },
+    { qstFileId: "FIL11EDF9FA92E44E32AAB90242AC110002" },
+    { qstFileId: "FIL11EDF9FA92F82810AAB90242AC110002" },
+    { qstFileId: "FIL11EDF9FA9300DA83AAB90242AC110002" }
+  );
+  offset1.value = -1;
+  done();
 };
 
 function fetchCategory(id, grade, subject) {
@@ -257,15 +284,15 @@ const initTree = async function (v1, v2) {
   searchQst(data[0]);
 };
 
-initTree(selectGrade.value, selectSubject.value); //트리 데이터 초기화
+initTree(selectGrade.value.id, selectSubject.value.id); //트리 데이터 초기화
 
 //학년 선택박스 update 이벤트
 const updateSelect = function (v) {
-  initTree(v, selectSubject.value);
+  initTree(v.id, selectSubject.value.id);
 };
 //과목 선택박스 update 이벤트
 const updateSubjectSelect = function (v) {
-  initTree(selectGrade.value, v);
+  initTree(selectGrade.value.id, v.id);
 };
 
 const send = function () {
@@ -275,8 +302,8 @@ const send = function () {
 const onLazyLoad = async function ({ node, key, done, fail }) {
   var data = await fetchCategory(
     node.id,
-    selectGrade.value,
-    selectSubject.value
+    selectGrade.value.id,
+    selectSubject.value.id
   );
 
   done(data);
@@ -328,9 +355,3 @@ const subjectOptions = [
   },
 ];
 </script>
-<style lang="sass" scoped>
-.my-card
-  width: 100%
-  max-width: 345px
-  // max-height: 245px
-</style>

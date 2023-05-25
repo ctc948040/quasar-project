@@ -11,7 +11,12 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> HSMS App </q-toolbar-title>
+        <q-btn flat dense round href="#/" style="margin-left: 10px">
+          <q-avatar size="42px">
+            <img src="icons/logo.png" />
+          </q-avatar>
+        </q-btn>
+        <q-toolbar-title> HSMS </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
       </q-toolbar>
