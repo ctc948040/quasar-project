@@ -18,7 +18,11 @@
         </q-btn>
         <q-toolbar-title> HSMS </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn color="teal" round size="md" icon="shopping_cart">
+          <q-badge color="purple" floating>{{ basketCnt }}</q-badge>
+        </q-btn>
+
+        <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
     </q-header>
 
@@ -54,75 +58,6 @@
 import { defineComponent, ref, inject } from "vue";
 import EssentialLinkComponent from "src/components/EssentialLinkComponent.vue";
 
-const linksList = [
-  {
-    title: "Home",
-    caption: "",
-    icon: "home",
-    link: "#/",
-    target: "_self",
-    name: "home",
-  },
-  {
-    title: "카테고리설정",
-    caption: "카테고리를 설정합니다.",
-    icon: "school",
-    link: "#/Category",
-    target: "_self",
-    name: "category",
-  },
-  {
-    title: "그리드 데모",
-    caption: "동적 그리드 그리기",
-    icon: "chat",
-    link: "#/GridDemo",
-    target: "_self",
-    name: "grid",
-  },
-  // {
-  //   title: "Docs",
-  //   caption: "quasar.dev",
-  //   icon: "school",
-  //   link: "https://quasar.dev",
-  // },
-  // {
-  //   title: "Github",
-  //   caption: "github.com/quasarframework",
-  //   icon: "code",
-  //   link: "https://github.com/quasarframework",
-  // },
-  // {
-  //   title: "Discord Chat Channel",
-  //   caption: "chat.quasar.dev",
-  //   icon: "chat",
-  //   link: "https://chat.quasar.dev",
-  // },
-  // {
-  //   title: "Forum",
-  //   caption: "forum.quasar.dev",
-  //   icon: "record_voice_over",
-  //   link: "https://forum.quasar.dev",
-  // },
-  // {
-  //   title: "Twitter",
-  //   caption: "@quasarframework",
-  //   icon: "rss_feed",
-  //   link: "https://twitter.quasar.dev",
-  // },
-  // {
-  //   title: "Facebook",
-  //   caption: "@QuasarFramework",
-  //   icon: "public",
-  //   link: "https://facebook.quasar.dev",
-  // },
-  // {
-  //   title: "Quasar Awesome",
-  //   caption: "Community Quasar projects",
-  //   icon: "favorite",
-  //   link: "https://awesome.quasar.dev",
-  // },
-];
-
 export default defineComponent({
   name: "MainLayout",
 
@@ -132,17 +67,114 @@ export default defineComponent({
 
   setup() {
     const leftDrawerOpen = ref(false);
-
+    const bus = inject("bus"); // inside setup()
     const activeMenu = ref({ menu: "home" }); //active menu
 
-    const bus = inject("bus"); // inside setup()
+    const basketList = ref([]); //문제바구니 리스트
+    const basketCnt = ref(0); //문제바구니 건수
 
-    //이벤트 버스 사용 예제
+    //왼편메뉴 토글 호출
     bus.on("toggleLeftDrawer", (arg1) => {
       leftDrawerOpen.value = arg1;
     });
 
+    //문제바구니에 담기
+    bus.on("MainLayout.addBasket", (item) => {
+      let isItem = basketList.value.findIndex(function (element) {
+        // console.info(element.qstId, item.qstId);
+        if (element.qstId == item.qstId) {
+          return true;
+        }
+      });
+
+      console.info("isItem", isItem);
+
+      if (isItem == -1) {
+        basketList.value.push(item);
+      }
+      basketCnt.value = basketList.value.length;
+    });
+
+    const linksList = [
+      {
+        title: "Home",
+        caption: "",
+        icon: "home",
+        link: "#/",
+        target: "_self",
+        name: "home",
+      },
+      {
+        title: "카테고리설정",
+        caption: "카테고리를 설정합니다.",
+        icon: "school",
+        link: "#/Category",
+        target: "_self",
+        name: "category",
+      },
+      {
+        title: "그리드 데모",
+        caption: "동적 그리드 그리기",
+        icon: "chat",
+        link: "#/GridDemo",
+        target: "_self",
+        name: "grid",
+      },
+      {
+        title: "팝업 데모",
+        caption: "팝업 샘플",
+        icon: "announcement",
+        link: "#/PopupPage",
+        target: "_self",
+        name: "PopupPage",
+      },
+      // {
+      //   title: "Docs",
+      //   caption: "quasar.dev",
+      //   icon: "school",
+      //   link: "https://quasar.dev",
+      // },
+      // {
+      //   title: "Github",
+      //   caption: "github.com/quasarframework",
+      //   icon: "code",
+      //   link: "https://github.com/quasarframework",
+      // },
+      // {
+      //   title: "Discord Chat Channel",
+      //   caption: "chat.quasar.dev",
+      //   icon: "chat",
+      //   link: "https://chat.quasar.dev",
+      // },
+      // {
+      //   title: "Forum",
+      //   caption: "forum.quasar.dev",
+      //   icon: "record_voice_over",
+      //   link: "https://forum.quasar.dev",
+      // },
+      // {
+      //   title: "Twitter",
+      //   caption: "@quasarframework",
+      //   icon: "rss_feed",
+      //   link: "https://twitter.quasar.dev",
+      // },
+      // {
+      //   title: "Facebook",
+      //   caption: "@QuasarFramework",
+      //   icon: "public",
+      //   link: "https://facebook.quasar.dev",
+      // },
+      // {
+      //   title: "Quasar Awesome",
+      //   caption: "Community Quasar projects",
+      //   icon: "favorite",
+      //   link: "https://awesome.quasar.dev",
+      // },
+    ];
+
     return {
+      basketList: basketList,
+      basketCnt: basketCnt,
       essentialLinks: linksList,
       activeMenu,
       leftDrawerOpen,

@@ -85,12 +85,15 @@
         <div
           class="q-pa-md"
           id="scroll-target-id"
-          style="max-height: 100%; overflow: auto"
+          style="height: 100%; max-height: 100%; overflow: auto"
         >
           <div class="q-mb-sm">
             <q-icon name="format_list_bulleted" color="primary" size="16px" />
             <span style="vertical-align: text-top">
-              카테고리 {{ !selected ? "" : " - [ " + selected + " ]" }}</span
+              카테고리
+              {{
+                !selected ? "" : " - [ " + selected + " ]: 총(" + cnt + ") 건"
+              }}</span
             >
           </div>
 
@@ -121,10 +124,14 @@
                   </q-item-section>
 
                   <q-item-section>
-                    <q-item-label style="word-break: break-all"
-                      >Title111111111111111111111111111111111111222222222222222222222222222222222222222221111111</q-item-label
-                    >
-                    <q-item-label caption> Subhead </q-item-label>
+                    <q-item-label style="word-break: break-all">{{
+                      item.qstTitle +
+                      ", 유형:" +
+                      item.qstPattern +
+                      ", 난이도:" +
+                      item.dfcltLevelName
+                    }}</q-item-label>
+                    <q-item-label caption> {{ item.ctgName }} </q-item-label>
                   </q-item-section>
                 </q-item>
                 <q-separator />
@@ -137,7 +144,13 @@
                 <q-card-actions>
                   <q-space></q-space>
                   <!-- <q-btn flat round color="red" icon="favorite" /> -->
-                  <q-btn flat round color="accent" icon="add" />
+                  <q-btn
+                    flat
+                    round
+                    color="accent"
+                    icon="add"
+                    @click="addQstToBasket(item)"
+                  />
                   <!-- <q-btn flat round color="primary" icon="share" /> -->
                   <q-btn flat round dense icon="more_vert" />
                 </q-card-actions>
@@ -184,12 +197,7 @@ const expanded = ref([]); //확장노드 배열
 const selected = ref(null); //클릭노드
 const ticked = ref([]); //체크 노드
 const editedNode = ref({}); //편집노드
-const questList = ref([
-  { qstFileId: "FIL11EDF9FA9289A8DCAAB90242AC110002" },
-  { qstFileId: "FIL11EDF9FA92A36AA4AAB90242AC110002" },
-  { qstFileId: "FIL11EDF9FA92B6BD29AAB90242AC110002" },
-  { qstFileId: "FIL11EDF9FA92C3E4EEAAB90242AC110002" },
-]);
+const questList = ref([]);
 const imgCheck = ref([]);
 
 // const editing = ref({});
@@ -197,17 +205,96 @@ const imgCheck = ref([]);
 const currNode = ref({});
 const splitterModel = ref(20);
 
-const offset1 = ref(350);
+const offset1 = ref(-1);
+const pageNum = ref(0);
+const searchNode = ref(null);
+const cnt = ref(0);
 
-const onLoad1 = function (index, done) {
-  questList.value.push(
-    { qstFileId: "FIL11EDF9FA92D48689AAB90242AC110002" },
-    { qstFileId: "FIL11EDF9FA92E44E32AAB90242AC110002" },
-    { qstFileId: "FIL11EDF9FA92F82810AAB90242AC110002" },
-    { qstFileId: "FIL11EDF9FA9300DA83AAB90242AC110002" }
-  );
-  offset1.value = -1;
+const addQstToBasket = function (item) {
+  // console.info(item);
+  const uri =
+    "/basket/insertBasket?userId=USR11EDFB70738072929BBA0242AC110002&gradeCode=" +
+    selectGrade.value.id +
+    "&subjectCode=" +
+    selectSubject.value.id +
+    "&qstId=" +
+    item.qstId;
+  fetch(uri, { method: "post" })
+    .then((response) => response.json())
+    .then((response) => {
+      bus.emit("MainLayout.addBasket", response.data);
+      // console.info(response.data);
+    });
+};
+
+const initTree = async function (v1, v2) {
+  // var m = treeData[v1] || {};
+  console.log(v1, v2);
+
+  var data = await fetchCategory("", v1, v2);
+
+  treeList.value = data || [];
+  expanded.value = [data[0].label || ""];
+
+  selected.value = data[0].label;
+
+  console.log("initTree", "=====>", "searchQst");
+  questList.value = await searchQst(data[0]);
+};
+
+const onLoad1 = async function (index, done) {
+  if (searchNode.value == null) {
+    console.log("searchNode is null");
+    return done();
+  }
+  console.info("searchNode.value", searchNode.value);
+  console.info("pagenum", pageNum.value);
+  console.log("onLoad1", "=====>", "searchQst");
+  let list = await searchQst(searchNode.value);
+  questList.value.push(...list); //배열의 각 원소들을 push하는 방법
+
+  if (list.length == 0) {
+    offset1.value = -1;
+  }
   done();
+};
+
+const clickNode = async function (node, isExtend) {
+  if (!isExtend) {
+    //토글
+    tree.value.setExpanded(node.label, true);
+    //tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
+  } else {
+    //무조건 확장
+    tree.value.setExpanded(node.label, true);
+  }
+
+  selected.value = node.label;
+  console.log("clickNode", "=====>", "searchQst");
+  pageNum.value = 0;
+  questList.value = [];
+  questList.value = await searchQst(node);
+};
+
+const searchQst = function (node) {
+  searchNode.value = node;
+  const uri =
+    "/question/selectListQuestion?ctgId=" +
+    node.id +
+    "&pageNum=" +
+    pageNum.value;
+  return fetch(uri, { method: "get" })
+    .then((response) => response.json())
+    .then((response) => {
+      if (response.data == null) {
+        cnt.value = questList.value.length;
+        return [];
+      }
+      pageNum.value += response.data.length;
+      offset1.value = 0;
+      cnt.value = response.data[0].cnt;
+      return response.data;
+    });
 };
 
 function fetchCategory(id, grade, subject) {
@@ -241,23 +328,6 @@ const deleteNode = function (node) {
   console.log("deleteNode", node);
 };
 
-const clickNode = function (node, isExtend) {
-  if (!isExtend) {
-    //토글
-    tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
-  } else {
-    //무조건 확장
-    tree.value.setExpanded(node.label, true);
-  }
-
-  selected.value = node.label;
-  searchQst(node);
-};
-
-const searchQst = function (node) {
-  console.info("searchQst", node);
-};
-
 // watch(input1, async () => {
 //   const data = input1.value;
 
@@ -269,20 +339,6 @@ const searchQst = function (node) {
 //     //input.value.focus();
 //   }, 1);
 // });
-
-const initTree = async function (v1, v2) {
-  // var m = treeData[v1] || {};
-  console.log(v1, v2);
-
-  var data = await fetchCategory("", v1, v2);
-
-  treeList.value = data || [];
-  expanded.value = [data[0].label || ""];
-
-  selected.value = data[0].label;
-
-  searchQst(data[0]);
-};
 
 initTree(selectGrade.value.id, selectSubject.value.id); //트리 데이터 초기화
 

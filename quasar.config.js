@@ -94,6 +94,10 @@ module.exports = configure(function (ctx) {
               target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
+            '/basket/*': {
+              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              changeOrigin: true,
+            },
           },
     },
 
