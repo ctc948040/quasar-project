@@ -17,7 +17,7 @@ const routes = [
   {
     path: "/PopupPage",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("src/pages/PopupPage.vue") }],
+    children: [{ path: "", component: () => import("pages/PopupPage.vue") }],
   },
 
   // Always leave this as last one,

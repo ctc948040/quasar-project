@@ -4,10 +4,10 @@
       <template v-slot:before>
         <q-scroll-area style="height: 100%; width: 100%">
           <div class="q-pa-sm">
-            <q-badge color="secondary" multi-line>
+            <!-- <q-badge color="secondary" multi-line>
               expanded: {{ expanded }} selectModel: {{ selectGrade }}
               {{ selectSubject }}
-            </q-badge>
+            </q-badge> -->
 
             <!-- 등급 선택 박스 시작-->
             <q-select
@@ -57,6 +57,7 @@
                 default-expand-all
                 tick-strategy="strict"
                 @lazy-load="onLazyLoad"
+                @update:selected="selectNOde"
                 accordion
               >
                 <!-- v-model:selected.sync="selected" -->
@@ -185,13 +186,30 @@ import {
   inject,
 } from "vue";
 import { useQuasar } from "quasar";
+import { post, get } from "src/js/com.js";
 import TreeNodeComponent from "components/TreeNodeComponent.vue";
 defineComponent({ name: "CategoryPage" });
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
-const selectGrade = ref({ id: "COMGRDM2", desc: "중2" }); //학년 선택박스 모델
-const selectSubject = ref({ id: "COMSBJ01", desc: "과학" }); //과목 선택박스 모델
+
+const selectGrade = ref(); //학년 선택박스 모델
+const selectSubject = ref(); //과목 선택박스 모델
+
+onMounted(() => {
+  bus.emit("MainLayout.toggleLeftDrawer", false);
+});
+
+watch([selectGrade, selectSubject], () => {
+  bus.emit("MainLayout.shareValue", {
+    selectGrade: selectGrade.value,
+    selectSubject: selectSubject.value,
+  });
+});
+
+selectGrade.value = { id: "COMGRDM2", desc: "중2" };
+selectSubject.value = { id: "COMSBJ01", desc: "과학" };
+
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
 const selected = ref(null); //클릭노드
@@ -211,20 +229,21 @@ const searchNode = ref(null);
 const cnt = ref(0);
 
 const addQstToBasket = function (item) {
-  // console.info(item);
-  const uri =
-    "/basket/insertBasket?userId=USR11EDFB70738072929BBA0242AC110002&gradeCode=" +
-    selectGrade.value.id +
-    "&subjectCode=" +
-    selectSubject.value.id +
-    "&qstId=" +
-    item.qstId;
-  fetch(uri, { method: "post" })
-    .then((response) => response.json())
-    .then((response) => {
-      bus.emit("MainLayout.addBasket", response.data);
-      // console.info(response.data);
-    });
+  const uri = "/basket/insertBasket";
+
+  const body = {
+    userId: "USR11EDFB70738072929BBA0242AC110002",
+    gradeCode: selectGrade.value.id,
+    subjectCode: selectSubject.value.id,
+    qstId: item.qstId,
+  };
+
+  post(uri, body)
+    .then((res) => {
+      //console.log(res.data);
+      bus.emit("MainLayout.addBasket", res.data);
+    })
+    .catch((error) => console.log(error));
 };
 
 const initTree = async function (v1, v2) {
@@ -240,6 +259,10 @@ const initTree = async function (v1, v2) {
 
   console.log("initTree", "=====>", "searchQst");
   questList.value = await searchQst(data[0]);
+};
+
+const selectNOde = async function (selected, node) {
+  console.info(selected, node);
 };
 
 const onLoad1 = async function (index, done) {
@@ -318,27 +341,11 @@ bus.on("some-event", (arg1, arg2, arg3) => {
   console.log(arg1, arg2, arg3);
 });
 
-onMounted(() => {
-  bus.emit("toggleLeftDrawer", false);
-});
-
 const deleteNode = function (node) {
   //delete node;
   console.log("treeList", treeList.value);
   console.log("deleteNode", node);
 };
-
-// watch(input1, async () => {
-//   const data = input1.value;
-
-//   if (currNode.value.label != data) {
-//     console.log("data211111111", data);
-//     currNode.value.label = data;
-//   }
-//   setTimeout(() => {
-//     //input.value.focus();
-//   }, 1);
-// });
 
 initTree(selectGrade.value.id, selectSubject.value.id); //트리 데이터 초기화
 

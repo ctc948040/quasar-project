@@ -25,7 +25,7 @@
         @blur="doneEdit(node)"
         @keyup.enter="doneEdit(node)"
         @keyup.escape="cancelEdit(node)"
-        @vnode-mounted="({ el }) => el.focus()"
+        @vue:mounted="({ el }) => el.focus()"
         @focus="nodeFocus(node, $event)"
         label="Label"
         maxlength="200"
