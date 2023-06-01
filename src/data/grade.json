@@ -1,0 +1,26 @@
+[
+  {
+    "id": "COMGRDM1",
+    "desc": "중1"
+  },
+  {
+    "id": "COMGRDM2",
+    "desc": "중2"
+  },
+  {
+    "id": "COMGRDM3",
+    "desc": "중3"
+  },
+  {
+    "id": "COMGRDH1",
+    "desc": "고1"
+  },
+  {
+    "id": "COMGRDH2",
+    "desc": "고2"
+  },
+  {
+    "id": "COMGRDH3",
+    "desc": "고3"
+  }
+]

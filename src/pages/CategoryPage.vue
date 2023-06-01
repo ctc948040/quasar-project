@@ -5,44 +5,8 @@
         <q-scroll-area style="height: 100%; width: 100%">
           <div class="q-pa-sm">
             <!-- <q-badge color="secondary" multi-line>
-              expanded: {{ expanded }} selectModel: {{ selectGrade }}
-              {{ selectSubject }}
+              expanded: {{ expanded }}
             </q-badge> -->
-
-            <!-- 등급 선택 박스 시작-->
-            <q-select
-              v-model="selectGrade"
-              :options="gradeOptions"
-              option-value="id"
-              option-label="desc"
-              option-disable="inactive"
-              style="display: contents"
-              @update:model-value="updateSelect"
-              label="학년"
-            >
-              <!-- emit-value -->
-              <template v-slot:prepend>
-                <q-icon name="school" color="primary" @click.stop.prevent />
-              </template>
-            </q-select>
-            <!-- 등급 선택 박스 종료 -->
-            <!-- <q-space></q-space> -->
-            <!-- 과목 선택 박스 시작-->
-            <q-select
-              v-model="selectSubject"
-              :options="subjectOptions"
-              option-value="id"
-              option-label="desc"
-              option-disable="inactive"
-              style="display: contents"
-              class="q-ml-sm q-my-sm"
-              @update:model-value="updateSubjectSelect"
-              label="과목"
-            >
-              <template v-slot:prepend>
-                <q-icon name="class" color="secondary" @click.stop.prevent />
-              </template>
-            </q-select>
 
             <!-- 트리 시작 -->
             <div class="q-gutter-sm q-mt-sm">
@@ -57,7 +21,7 @@
                 default-expand-all
                 tick-strategy="strict"
                 @lazy-load="onLazyLoad"
-                @update:selected="selectNOde"
+                @update:selected="selectNode"
                 accordion
               >
                 <!-- v-model:selected.sync="selected" -->
@@ -65,8 +29,8 @@
                 <template v-slot:default-header="prop">
                   <TreeNodeComponent
                     :node="prop.node"
-                    :grade="selectGrade.id"
-                    :subject="selectSubject.id"
+                    :grade="select.grade"
+                    :subject="select.subject"
                     :expanded="expanded"
                     :editedNode="editedNode"
                     @deleteNode="deleteNode"
@@ -188,27 +152,15 @@ import {
 import { useQuasar } from "quasar";
 import { post, get } from "src/js/com.js";
 import TreeNodeComponent from "components/TreeNodeComponent.vue";
+import { useSelectStore } from "stores/select";
+
 defineComponent({ name: "CategoryPage" });
+
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
 const tree = ref(null);
 
-const selectGrade = ref(); //학년 선택박스 모델
-const selectSubject = ref(); //과목 선택박스 모델
-
-onMounted(() => {
-  bus.emit("MainLayout.toggleLeftDrawer", false);
-});
-
-watch([selectGrade, selectSubject], () => {
-  bus.emit("MainLayout.shareValue", {
-    selectGrade: selectGrade.value,
-    selectSubject: selectSubject.value,
-  });
-});
-
-selectGrade.value = { id: "COMGRDM2", desc: "중2" };
-selectSubject.value = { id: "COMSBJ01", desc: "과학" };
+const select = useSelectStore(); //학년,과목 저장 정보
 
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
@@ -228,13 +180,22 @@ const pageNum = ref(0);
 const searchNode = ref(null);
 const cnt = ref(0);
 
+onMounted(() => {
+  bus.emit("MainLayout.toggleLeftDrawer", false);
+});
+
+//상단 학년, 과목에서 호출됨
+bus.on("MainLayout.initTree", (grade, subject) => {
+  initTree(grade, subject);
+});
+
 const addQstToBasket = function (item) {
   const uri = "/basket/insertBasket";
 
   const body = {
     userId: "USR11EDFB70738072929BBA0242AC110002",
-    gradeCode: selectGrade.value.id,
-    subjectCode: selectSubject.value.id,
+    gradeCode: select.grade,
+    subjectCode: select.subject,
     qstId: item.qstId,
   };
 
@@ -261,7 +222,7 @@ const initTree = async function (v1, v2) {
   questList.value = await searchQst(data[0]);
 };
 
-const selectNOde = async function (selected, node) {
+const selectNode = async function (selected, node) {
   console.info(selected, node);
 };
 
@@ -347,15 +308,15 @@ const deleteNode = function (node) {
   console.log("deleteNode", node);
 };
 
-initTree(selectGrade.value.id, selectSubject.value.id); //트리 데이터 초기화
+initTree(select.grade, select.subject); //트리 데이터 초기화
 
 //학년 선택박스 update 이벤트
 const updateSelect = function (v) {
-  initTree(v.id, selectSubject.value.id);
+  initTree(v.id, select.subject);
 };
 //과목 선택박스 update 이벤트
 const updateSubjectSelect = function (v) {
-  initTree(selectGrade.value.id, v.id);
+  initTree(select.grade, v.id);
 };
 
 const send = function () {
@@ -363,58 +324,8 @@ const send = function () {
 };
 
 const onLazyLoad = async function ({ node, key, done, fail }) {
-  var data = await fetchCategory(
-    node.id,
-    selectGrade.value.id,
-    selectSubject.value.id
-  );
+  var data = await fetchCategory(node.id, select.grade, select.subject);
 
   done(data);
 };
-
-const gradeOptions = [
-  {
-    id: "COMGRDM1",
-    desc: "중1",
-  },
-  {
-    id: "COMGRDM2",
-    desc: "중2",
-  },
-  {
-    id: "COMGRDM3",
-    desc: "중3",
-  },
-  {
-    id: "COMGRDH1",
-    desc: "고1",
-  },
-  {
-    id: "COMGRDH2",
-    desc: "고2",
-  },
-  {
-    id: "COMGRDH3",
-    desc: "고3",
-  },
-];
-
-const subjectOptions = [
-  {
-    id: "COMSBJ01",
-    desc: "과학",
-  },
-  {
-    id: "COMSBJ02",
-    desc: "수학",
-  },
-  {
-    id: "COMSBJ03",
-    desc: "영어",
-  },
-  {
-    id: "COMSBJ04",
-    desc: "국어",
-  },
-];
 </script>

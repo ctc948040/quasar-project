@@ -18,6 +18,53 @@
         </q-btn>
         <q-toolbar-title> HSMS </q-toolbar-title>
 
+        <q-badge color="secondary" multi-line class="q-ma-md">
+          Model: "{{ select.grade }} {{ select.subject }}"
+        </q-badge>
+
+        <!-- 등급 선택 박스 시작-->
+        <q-select
+          v-model="select.selectedGrade"
+          :options="select.gradeItems"
+          option-value="id"
+          option-label="desc"
+          label="학년"
+          bg-color="white"
+          outlined
+          rounded
+          dense
+          style="width: 150px"
+          color="primary"
+          @update:model-value="select.updateSelect"
+        >
+          <!-- emit-value -->
+          <template v-slot:prepend>
+            <q-icon name="school" color="primary" @click.stop.prevent />
+          </template>
+        </q-select>
+        <!-- 등급 선택 박스 종료 -->
+        <!-- <q-space></q-space> -->
+        <!-- 과목 선택 박스 시작-->
+        <q-select
+          v-model="select.selectedSubject"
+          :options="select.subjectItems"
+          option-value="id"
+          option-label="desc"
+          class="q-ma-sm"
+          label="과목"
+          bg-color="white"
+          outlined
+          rounded
+          dense
+          style="width: 150px"
+          color="secondary"
+          @update:model-value="select.updateSelect"
+        >
+          <template v-slot:prepend>
+            <q-icon name="class" color="secondary" @click.stop.prevent />
+          </template>
+        </q-select>
+
         <q-btn
           color="teal"
           round
@@ -64,6 +111,13 @@
 import { ref, inject } from "vue";
 import EssentialLinkComponent from "components/EssentialLinkComponent.vue";
 
+import { useSelectStore } from "stores/select";
+
+const select = useSelectStore();
+
+select.fillGrade();
+select.fillSubject();
+
 const leftDrawerOpen = ref(false);
 const bus = inject("bus"); // inside setup()
 const activeMenu = ref({ menu: "home" }); //active menu
@@ -80,13 +134,6 @@ const showDialog = function () {};
 //왼편메뉴 토글 호출
 bus.on("MainLayout.toggleLeftDrawer", (arg1) => {
   leftDrawerOpen.value = arg1;
-});
-
-//자식화면에서 상단에 공유해야 할 변수 공유
-bus.on("MainLayout.shareValue", (arg1) => {
-  shareValue.value = arg1;
-
-  console.log(arg1);
 });
 
 //문제바구니에 담기
