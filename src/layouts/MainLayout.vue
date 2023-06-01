@@ -18,9 +18,9 @@
         </q-btn>
         <q-toolbar-title> HSMS </q-toolbar-title>
 
-        <q-badge color="secondary" multi-line class="q-ma-md">
+        <!-- <q-badge color="secondary" multi-line class="q-ma-md">
           Model: "{{ select.grade }} {{ select.subject }}"
-        </q-badge>
+        </q-badge> -->
 
         <!-- 등급 선택 박스 시작-->
         <q-select
@@ -36,6 +36,7 @@
           style="width: 150px"
           color="primary"
           @update:model-value="select.updateSelect"
+          class="q-ma-none q-pa-xs"
         >
           <!-- emit-value -->
           <template v-slot:prepend>
@@ -50,7 +51,7 @@
           :options="select.subjectItems"
           option-value="id"
           option-label="desc"
-          class="q-ma-sm"
+          class="q-ma-none q-pa-xs"
           label="과목"
           bg-color="white"
           outlined
@@ -67,13 +68,22 @@
 
         <q-btn
           color="teal"
-          round
+          rounded
           size="md"
           icon="shopping_cart"
-          @click="showDialog"
+          @click="fixedPopup = true"
         >
-          <q-badge color="purple" floating>{{ basketCnt }}</q-badge>
+          <q-badge color="red" floating transparent>{{ cart.count }}</q-badge>
         </q-btn>
+        <!-- <q-item clickable @click="showDialog">
+          <q-item-section>
+            <q-avatar color="teal" text-color="white" icon="shopping_cart">
+              <q-badge color="red" transparent floating>{{
+                cart.count
+              }}</q-badge>
+            </q-avatar>
+          </q-item-section>
+        </q-item> -->
 
         <!-- <div>Quasar v{{ $q.version }}</div> -->
       </q-toolbar>
@@ -95,6 +105,9 @@
       <router-view />
     </q-page-container>
   </q-layout>
+  <q-dialog v-model="fixedPopup" full-height
+    ><BasketListComponent></BasketListComponent
+  ></q-dialog>
 </template>
 
 <style lang="sass">
@@ -110,13 +123,20 @@
 <script setup>
 import { ref, inject } from "vue";
 import EssentialLinkComponent from "components/EssentialLinkComponent.vue";
+import BasketListComponent from "components/BasketListComponent.vue";
 
 import { useSelectStore } from "stores/select";
+import { useCartStore } from "stores/cart";
 
 const select = useSelectStore();
-
 select.fillGrade();
 select.fillSubject();
+
+const cart = useCartStore();
+
+const fixedPopup = ref();
+
+cart.fill(select.grade, select.subject);
 
 const leftDrawerOpen = ref(false);
 const bus = inject("bus"); // inside setup()
@@ -134,6 +154,11 @@ const showDialog = function () {};
 //왼편메뉴 토글 호출
 bus.on("MainLayout.toggleLeftDrawer", (arg1) => {
   leftDrawerOpen.value = arg1;
+});
+
+//상단 학년, 과목에서 호출됨
+bus.on("MainLayout.initTree", (grade, subject) => {
+  cart.fill(select.grade, select.subject);
 });
 
 //문제바구니에 담기

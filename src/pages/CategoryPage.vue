@@ -115,6 +115,7 @@
                     color="accent"
                     icon="add"
                     @click="addQstToBasket(item)"
+                    v-if="cart.findIndex(item) === -1"
                   />
                   <!-- <q-btn flat round color="primary" icon="share" /> -->
                   <q-btn flat round dense icon="more_vert" />
@@ -153,6 +154,7 @@ import { useQuasar } from "quasar";
 import { post, get } from "src/js/com.js";
 import TreeNodeComponent from "components/TreeNodeComponent.vue";
 import { useSelectStore } from "stores/select";
+import { useCartStore } from "stores/cart";
 
 defineComponent({ name: "CategoryPage" });
 
@@ -161,6 +163,7 @@ const $q = useQuasar();
 const tree = ref(null);
 
 const select = useSelectStore(); //학년,과목 저장 정보
+const cart = useCartStore();
 
 const treeList = ref([]); //트리 노드 배열
 const expanded = ref([]); //확장노드 배열
@@ -201,8 +204,9 @@ const addQstToBasket = function (item) {
 
   post(uri, body)
     .then((res) => {
+      cart.addItem(res.data);
       //console.log(res.data);
-      bus.emit("MainLayout.addBasket", res.data);
+      // bus.emit("MainLayout.addBasket", res.data);
     })
     .catch((error) => console.log(error));
 };

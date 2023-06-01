@@ -14,20 +14,33 @@ export const useSelectStore = defineStore('select', () => {
     const grade = computed(() => selectedGrade.value.id);
     const subject = computed(() => selectedSubject.value.id);
 
+    const gradeName = computed(() => selectedGrade.value.desc);
+    const subjectName = computed(() => selectedSubject.value.desc);
+
     async function  fillGrade() {
       gradeItems.value = (await import("src/data/grade.json")).default;
-      console.info(gradeItems.value);
+      //console.info(gradeItems.value);
     };
 
     async function  fillSubject() {
       subjectItems.value = (await import("src/data/subject.json")).default;
-      console.info(subjectItems.value);
+      //console.info(subjectItems.value);
     };
     function updateSelect() {
-
-      console.info(this.selectedGrade.id,this.selectedSubject.id);
       bus.emit("MainLayout.initTree", this.selectedGrade.id,this.selectedSubject.id);
     };
 
-    return { gradeItems, subjectItems, selectedGrade, selectedSubject,grade,subject ,fillGrade,fillSubject,updateSelect }
+    return {
+        gradeItems,
+        subjectItems,
+        selectedGrade,
+        selectedSubject,
+        grade,
+        subject,
+        gradeName,
+        subjectName ,
+        fillGrade,
+        fillSubject,
+        updateSelect
+      }
 });
