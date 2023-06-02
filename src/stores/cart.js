@@ -4,8 +4,7 @@ import { post, get } from "src/js/com.js";
 export const useCartStore = defineStore({
   id: 'cart',
   state: () => ({
-    rawItems: ["a"],
-    temp: {bb:"bb",cc:"cc"},
+    rawItems: [],
   }),
   getters: {
     count : (state) => state.rawItems.length,
@@ -74,7 +73,7 @@ export const useCartStore = defineStore({
       post(uri, body)
       .then((res) => {
           this.rawItems =  res.data === null?[]:res.data;
-          //console.info(this.rawItems);
+          console.info(this.rawItems);
         })
       .catch((error) => console.log(error));
 

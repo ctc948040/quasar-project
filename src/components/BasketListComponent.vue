@@ -29,9 +29,18 @@
         <q-space />
         <q-chip
           clickable
+          icon="save"
+          color="primary"
+          text-color="white"
+          :disable="cart.count === 0"
+        >
+          시험지저장
+        </q-chip>
+        <q-chip
+          clickable
           @click="confirm2 = true"
           icon="delete"
-          color="primary"
+          color="secondary"
           text-color="white"
           :disable="cart.count === 0"
         >
@@ -43,6 +52,7 @@
           color="secondary"
           text-color="white"
           :disable="cart.count === 0"
+          @click="popupPrint"
         >
           프린트
         </q-chip>
@@ -117,8 +127,8 @@
       <q-separator />
 
       <q-card-actions align="right">
-        <q-btn flat label="Decline" color="primary" v-close-popup />
-        <q-btn flat label="Accept" color="primary" v-close-popup />
+        <q-btn flat label="닫기" color="primary" v-close-popup />
+        <!-- <q-btn flat label="Accept" color="primary" v-close-popup /> -->
       </q-card-actions>
     </q-card>
   </div>
@@ -170,6 +180,9 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+  <q-dialog v-model="printModel" full-height>
+    <BasketPrintComponent></BasketPrintComponent>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -177,6 +190,7 @@ import { ref } from "vue";
 import { useQuasar } from "quasar";
 
 import { VueDraggableNext } from "vue-draggable-next";
+// import BasketPrintComponent from "components/BasketPrintComponent.vue";
 // import rawDisplays from "components/rawDisplay.vue";
 // import DemoGrid from "components/GridComponent.vue";
 
@@ -190,11 +204,25 @@ const select = useSelectStore(); //학년,과목 저장 정보
 
 const cart = useCartStore();
 
+const popupPrint = function () {
+  let newWin = window.open(
+    "/#PrintPage?text=hello",
+    "",
+    "left=200,top=100,width=1070,height=900,toolbar=0,scrollbars=0,status=0"
+  );
+
+  setTimeout(function () {
+    newWin.print(); // 인쇄
+    //newWin.close(); // 창을 닫습니다
+  }, 3000);
+};
+
 // const $q = useQuasar();
 
 const confirm1 = ref(false);
 const confirm2 = ref(false);
 const currItem = ref(null);
+const printModel = ref(false);
 
 const log = function (e) {};
 const fixedPopup = ref();
@@ -204,28 +232,4 @@ const move = function (e) {
   console.log("Future index: " + e.draggedContext.futureIndex);
   console.log("element: " + e.draggedContext.element.name);
 };
-
-// const addListBasket = function () {
-//   const uri = "/basket/insertListBasket";
-//   const body = [
-//     {
-//       userId: "USR11EDFB70738072929BBA0242AC110002",
-//       gradeCode: "COMGRDM2",
-//       subjectCode: "COMSBJ01",
-//       qstId: "QST11EDFA29753B32E2AAB90242AC110002",
-//       qstSort: 9,
-//     },
-//     {
-//       userId: "USR11EDFB70738072929BBA0242AC110002",
-//       gradeCode: "COMGRDM2",
-//       subjectCode: "COMSBJ01",
-//       qstId: "QST11EDFA29753B2E0FAAB90242AC110002",
-//       qstSort: 10,
-//     },
-//   ];
-
-//   post(uri, body)
-//     .then((res) => console.log(res))
-//     .catch((error) => console.log(error));
-// };
 </script>

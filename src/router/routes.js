@@ -19,6 +19,11 @@ const routes = [
     component: () => import("layouts/MainLayout.vue"),
     children: [{ path: "", component: () => import("pages/PopupPage.vue") }],
   },
+  {
+    path: "/PrintPage",
+    component: () => import("layouts/PrintLayout.vue"),
+    children: [{ path: "", component: () => import("pages/PrintPage.vue") }],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
