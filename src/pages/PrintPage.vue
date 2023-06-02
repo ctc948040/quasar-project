@@ -52,7 +52,7 @@
 
       <tbody>
         <tr>
-          <td>
+          <td style="padding: 0px">
             <div class="page">
               <div>
                 <div
@@ -65,11 +65,11 @@
                     <img
                       :src="`/file/download?fileId=${item.qstFileId}`"
                       :style="{
-                        marginBottom:
-                          index === cart.rawItems.length ? 'none' : '50px',
+                        marginBottom: '100px',
                         maxWidth: '490px',
                       }"
                     />
+                    <!-- <q-separator /> -->
                   </div>
                 </div>
               </div>
@@ -125,12 +125,12 @@ cart.fill(select.grade, select.subject);
 }
 .page-footer {
   position: fixed;
-  bottom: -10px;
+  bottom: 5px;
   width: 100%;
 
   background: white;
 
-  height: 60px;
+  height: 50px;
   z-index: 999;
 }
 
