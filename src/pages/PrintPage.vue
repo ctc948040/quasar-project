@@ -96,8 +96,8 @@ import { useSelectStore } from "stores/select";
 import { useCartStore } from "stores/cart";
 
 const select = useSelectStore();
-select.fillGrade();
-select.fillSubject();
+//select.fillGrade();
+//select.fillSubject();
 
 const cart = useCartStore();
 
