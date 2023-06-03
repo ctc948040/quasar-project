@@ -127,6 +127,7 @@
     :columns="gridColumns"
     :filter-key="searchQuery"
   ></DemoGrid> -->
+  <router-view></router-view>
 </template>
 <script setup>
 import { ref } from "vue";

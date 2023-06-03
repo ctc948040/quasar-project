@@ -7,18 +7,40 @@ const routes = [
   {
     path: "/Category",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/CategoryPage.vue") }],
+    children: [{
+      path: "",
+      component: () => import("src/pages/category/CategoryPage.vue") ,
+	    children: [
+        {
+            path: "qstList", /*카테고리별문제리스트*/
+            component: () => import("pages/category/QstListPage.vue")
+        },
+        {
+          path: "importCategory",/*카테고리 import*/
+          component: () => import("pages/category/ImportCategoryPage.vue")
+        },
+      ]
+    }],
   },
   {
     path: "/GridDemo",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/GridDemo.vue") }],
+    children: [{
+      path: "", component: () => import("pages/GridDemo.vue")
+    }],
   },
   {
     path: "/PopupPage",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/PopupPage.vue") }],
-  },
+    children: [{
+      path: "",
+      component: () => import("pages/PopupPage.vue"),
+	    children: [{
+          path: "sub",
+          component: () => import("pages/PopupSubPage.vue")
+      }]
+    }],
+},
   {
     path: "/PrintPage",
     component: () => import("layouts/PrintLayout.vue"),
