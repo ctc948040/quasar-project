@@ -52,7 +52,7 @@
           color="secondary"
           text-color="white"
           :disable="cart.count === 0"
-          @click="popupPrint"
+          @click="printSettingPop = true"
         >
           프린트
         </q-chip>
@@ -179,6 +179,89 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model="printSettingPop">
+    <q-card class="my-card" style="width: 500px">
+      <q-form @submit="onSubmit" class="q-gutter-md">
+        <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
+
+        <q-card-section>
+          <!-- <q-btn
+          fab
+          color="primary"
+          icon="place"
+          class="absolute"
+          style="top: -20px; right: 12px; transform: translateY(-50%)"
+        /> -->
+
+          <div class="row no-wrap items-center">
+            <div class="col text-h6 ellipsis">프린트 세팅</div>
+            <!-- <div
+            class="col-auto text-grey text-caption q-pt-md row no-wrap items-center"
+          > -->
+            <!-- <q-icon name="place" />
+            250 ft -->
+            <!-- </div> -->
+          </div>
+          <!--
+        <q-rating v-model="stars" :max="5" size="32px" /> -->
+        </q-card-section>
+        <q-separator />
+
+        <q-card-section>
+          <q-input
+            bottom-slots
+            v-model="title"
+            label="시험 타이틀"
+            counter
+            lazy-rules
+            :rules="[
+              (val) => (val && val.length > 0) || '시험 타이틀를 입력해주세요.',
+            ]"
+          >
+            <template v-slot:prepend>
+              <q-icon name="title" />
+            </template>
+            <template v-slot:append>
+              <q-icon name="close" @click="text = ''" class="cursor-pointer" />
+            </template>
+
+            <template v-slot:hint> Field hint </template>
+          </q-input>
+          <q-input
+            bottom-slots
+            type="number"
+            v-model="distance"
+            label="문제간격"
+            lazy-rules
+            :rules="[
+              (val) =>
+                (val !== null && val !== '') || '문제간격을 입력해주세요.',
+              (val) => (val >= 50 && val <= 120) || '50~120 사이를 입력하세요.',
+            ]"
+          >
+            <template v-slot:prepend>
+              <q-icon name="distance" />
+            </template>
+            <template v-slot:append>
+              <q-icon
+                name="close"
+                @click="distance = ''"
+                class="cursor-pointer"
+              />
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn type="submit" color="primary" label="프린트" />
+          <q-btn v-close-popup flat color="primary" label="취소" />
+        </q-card-actions>
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script setup>
@@ -195,22 +278,37 @@ import { post } from "src/js/com.js";
 import { useCartStore } from "stores/cart";
 
 import { useSelectStore } from "stores/select";
+const $q = useQuasar();
 
 const select = useSelectStore(); //학년,과목 저장 정보
 
 const cart = useCartStore();
 
+const printSettingPop = ref(false);
+const title = ref("");
+const distance = ref(100);
+
+const onSubmit = function () {
+  // $q.notify({
+  //   color: "red-5",
+  //   textColor: "white",
+  //   icon: "warning",
+  //   message: "You need to accept the license and terms first",
+  // });
+
+  popupPrint(title.value, distance.value);
+
+  printSettingPop.value = false;
+};
+
 const popupPrint = function () {
+  const param = `?userId=USR11EDFB70738072929BBA0242AC110002&gradeName=${select.gradeName}&subjectName=${select.subjectName}&grade=${select.grade}&subject=${select.subject}&title=${title.value}&distance=${distance.value}`;
+  // console.log(param);
   let newWin = window.open(
-    "/#PrintPage?text=hello",
+    "/#PrintPage" + param,
     "",
     "left=200,top=100,width=1070,height=900,toolbar=0,scrollbars=0,status=0"
   );
-
-  setTimeout(function () {
-    newWin.print(); // 인쇄
-    //newWin.close(); // 창을 닫습니다
-  }, 3000);
 };
 
 // const $q = useQuasar();

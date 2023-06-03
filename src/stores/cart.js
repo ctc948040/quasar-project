@@ -20,7 +20,7 @@ export const useCartStore = defineStore({
     saveSort(grade,subject) {
       let body = [];
       this.rawItems.forEach((item,idx)=>{
-        console.log(item,idx);
+        // console.log(item,idx);
         let m = {};
         m["userId"] = "USR11EDFB70738072929BBA0242AC110002";
         m["gradeCode"] = grade;
@@ -43,7 +43,6 @@ export const useCartStore = defineStore({
       let i = this.findIndex(item);
 
       if (i > -1){
-        this.rawItems.splice(i, 1);
 
         const uri = "/basket/deleteBasket";
 
@@ -55,6 +54,7 @@ export const useCartStore = defineStore({
         };
 
         post(uri, body)
+        .then((res)=>this.rawItems.splice(i, 1))
         .catch((error) => console.log(error));
 
       }
@@ -93,7 +93,7 @@ export const useCartStore = defineStore({
       post(uri, body)
       .then((res) => {
           this.rawItems =  res.data === null?[]:res.data;
-          console.info(this.rawItems);
+          // console.info(this.rawItems);
         })
       .catch((error) => console.log(error));
 

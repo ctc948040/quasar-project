@@ -182,38 +182,11 @@ const toggleLeftDrawer = function () {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
 
-const essentialLinks = [
-  {
-    title: "Home",
-    caption: "",
-    icon: "home",
-    link: "#/",
-    target: "_self",
-    name: "home",
-  },
-  {
-    title: "카테고리설정",
-    caption: "카테고리를 설정합니다.",
-    icon: "school",
-    link: "#/Category",
-    target: "_self",
-    name: "category",
-  },
-  {
-    title: "그리드 데모",
-    caption: "동적 그리드 그리기",
-    icon: "chat",
-    link: "#/GridDemo",
-    target: "_self",
-    name: "grid",
-  },
-  {
-    title: "팝업 데모",
-    caption: "팝업 샘플",
-    icon: "announcement",
-    link: "#/PopupPage",
-    target: "_self",
-    name: "PopupPage",
-  },
-];
+const essentialLinks = ref([]);
+
+async function fillLink() {
+  essentialLinks.value = (await import("src/data/link.json")).default;
+}
+
+fillLink();
 </script>

@@ -3,7 +3,7 @@
     <!-- <div >======================================================</div> -->
     <div style="position: absolute; top: 20px; left: 10px">
       <q-chip icon="quiz" color="grey-6" text-color="white" dense size="20px">
-        중2, 과학
+        {{ route.query.gradeName }}, {{ route.query.subjectName }}
       </q-chip>
     </div>
     <div class="page" style="column-count: auto">
@@ -16,7 +16,25 @@
         "
         class="text-h4 text-grey-9 q-ma-sm"
       >
-        시험지 타이틀
+        {{ route.query.title }}
+      </div>
+
+      <div
+        style="position: absolute; top: 20px; right: 10px"
+        v-if="btnPrint"
+        class="not-print"
+      >
+        <q-chip
+          clickable
+          icon="print"
+          color="secondary"
+          text-color="white"
+          dense
+          size="20px"
+          @click="pagePrint"
+        >
+          프린트
+        </q-chip>
       </div>
 
       <div
@@ -39,7 +57,7 @@
             <img src="icons/logo.png" />
           </q-avatar>
         </q-btn>
-        [FBI 과학]
+        [FBI {{ route.query.subjectName }}]
       </div>
     </div>
 
@@ -64,10 +82,7 @@
                   <div class="user-image">
                     <img
                       :src="`/file/download?fileId=${item.qstFileId}`"
-                      :style="{
-                        marginBottom: '100px',
-                        maxWidth: '490px',
-                      }"
+                      :style="`margin-bottom : ${route.query.distance}px;max-width: 490px`"
                     />
                     <!-- <q-separator /> -->
                   </div>
@@ -91,17 +106,21 @@
 
 <script setup>
 import { ref, inject } from "vue";
+import { useRoute } from "vue-router";
 
-import { useSelectStore } from "stores/select";
 import { useCartStore } from "stores/cart";
 
-const select = useSelectStore();
-//select.fillGrade();
-//select.fillSubject();
+const route = useRoute();
 
 const cart = useCartStore();
 
-cart.fill(select.grade, select.subject);
+cart.fill(route.query.grade, route.query.subject);
+const btnPrint = ref(true);
+const pagePrint = function () {
+  //btnPrint.value = false;
+  self.print();
+  //btnPrint.value = true;
+};
 </script>
 
 <style>
@@ -164,6 +183,9 @@ cart.fill(select.grade, select.subject);
   }
 
   button {
+    display: none;
+  }
+  .not-print {
     display: none;
   }
 
