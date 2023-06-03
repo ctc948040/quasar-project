@@ -17,6 +17,26 @@ export const useCartStore = defineStore({
 
 
     },
+    saveSort(grade,subject) {
+      let body = [];
+      this.rawItems.forEach((item,idx)=>{
+        console.log(item,idx);
+        let m = {};
+        m["userId"] = "USR11EDFB70738072929BBA0242AC110002";
+        m["gradeCode"] = grade;
+        m["subjectCode"] = subject;
+        m["qstId"] = item.qstId;
+        m["qstSort"] = idx;
+        body.push(m);
+
+      });
+
+      const uri = "/basket/saveSortBasket";
+        post(uri, body)
+        .then((res) => console.log(res))
+        .catch((error) => console.log(error));
+
+    },
 
     removeItem(grade,subject,item) {
 

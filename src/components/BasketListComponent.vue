@@ -79,7 +79,6 @@
             class="q-gutter-md row content-start justify-center"
             :list="cart.rawItems"
             @change="log"
-            :move="move"
             v-else-if="cart.count > 0"
           >
             <q-item
@@ -180,9 +179,6 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
-  <q-dialog v-model="printModel" full-height>
-    <BasketPrintComponent></BasketPrintComponent>
-  </q-dialog>
 </template>
 
 <script setup>
@@ -224,12 +220,16 @@ const confirm2 = ref(false);
 const currItem = ref(null);
 const printModel = ref(false);
 
-const log = function (e) {};
+const log = function (e) {
+  // console.log("drag log");
+
+  cart.saveSort(select.grade, select.subject);
+};
 const fixedPopup = ref();
 // const fixedPopup1 = ref();
 
-const move = function (e) {
-  console.log("Future index: " + e.draggedContext.futureIndex);
-  console.log("element: " + e.draggedContext.element.name);
-};
+// const move = function (e) {
+//   console.log("Future index: " + e.draggedContext.futureIndex);
+//   //console.log("element: " + e.draggedContext.element.name);
+// };
 </script>
