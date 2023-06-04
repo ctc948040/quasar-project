@@ -4,15 +4,74 @@
     id="scroll-target-id"
     style="height: 100%; max-height: 100%; overflow: auto"
   >
-    <div class="q-mb-sm">
-      <q-icon name="format_list_bulleted" color="primary" size="16px" />
-      <span style="vertical-align: text-top">
-        카테고리
-        {{
-          !currNode ? "" : " - [ " + currNode.label + " ]: 총(" + cnt + ") 건"
-        }}</span
-      >
-    </div>
+    <q-card bordered flat class="q-mb-sm">
+      <q-item>
+        <q-item-section>
+          <q-breadcrumbs class="text-secondary">
+            <template v-slot:separator>
+              <q-icon size="1.5em" name="chevron_right" color="primary" />
+            </template>
+
+            <q-breadcrumbs-el label="Home" icon="home" />
+            <q-breadcrumbs-el label="category" icon="widgets" />
+            <q-item-label header class="q-pa-none">
+              {{
+                !currNode
+                  ? ""
+                  : " [ " + currNode.label + " : 총(" + cnt + ") 건]"
+              }}
+            </q-item-label>
+          </q-breadcrumbs>
+        </q-item-section>
+        <q-item-section side>
+          <q-btn-dropdown
+            color="teal-6"
+            label="문제관리"
+            dropdown-icon="more_vert"
+            outline
+          >
+            <q-list>
+              <q-item clickable v-close-popup @click="exportExcel">
+                <q-item-section avatar>
+                  <q-avatar
+                    icon="arrow_downward"
+                    color="cyan-3"
+                    text-color="white"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>문제 내보내기</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section avatar>
+                  <q-avatar
+                    icon="arrow_upward"
+                    color="amber-3"
+                    text-color="white"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>문제 가져오기</q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup @click="onItemClick">
+                <q-item-section avatar>
+                  <q-avatar
+                    icon="shopping_cart"
+                    color="deep-orange-3"
+                    text-color="white"
+                  />
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>전체바구니넣기</q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
+        </q-item-section>
+      </q-item>
+    </q-card>
 
     <q-infinite-scroll
       @load="onLoad1ByInfiniteScroll"
@@ -102,6 +161,11 @@ const cnt = ref(0);
 const currNode = ref(null);
 const offset1 = ref(-1);
 const questList = ref([]);
+
+const exportExcel = function () {
+  // setTimeout(() => (isspinner.value = false), 3000);
+  location.href = `/question/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}&ctgId=${currNode.value.id}`;
+};
 
 //카테고리 클릭시 호출
 bus.on("Category.clickNode", async (node) => {

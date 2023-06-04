@@ -44,31 +44,29 @@
                   <!-- <A
                     :href="`/category/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}`"
                   > -->
-                  <a @click="exportExcel">
-                    <q-spinner-dots
-                      color="primary"
-                      size="3em"
-                      :thickness="2"
-                      v-if="isspinner"
-                    />
-                    <q-chip
-                      clickable
-                      icon="arrow_upward"
-                      color="primary"
-                      text-color="white"
-                      outline
-                      dense
-                    >
-                      export
-                    </q-chip>
-                  </a>
+                  <!-- <a @click="exportExcel"> -->
+                  <q-spinner-dots
+                    color="primary"
+                    size="3em"
+                    :thickness="2"
+                    v-if="isspinner"
+                  />
+                  <q-chip
+                    clickable
+                    icon="arrow_upward"
+                    color="teal-6"
+                    text-color="white"
+                    @click="exportExcel"
+                  >
+                    export
+                  </q-chip>
+                  <!-- </a> -->
                   <q-chip
                     clickable
                     icon="arrow_downward"
-                    color="primary"
+                    color="teal-6"
                     text-color="white"
-                    outline
-                    dense
+                    @click="importExcel"
                   >
                     import
                   </q-chip>
@@ -132,11 +130,13 @@ import { post, get } from "src/js/com.js";
 import TreeNodeComponent from "components/TreeNodeComponent.vue";
 import { useSelectStore } from "stores/select";
 import { useCartStore } from "stores/cart";
+import { useRouter } from "vue-router";
 
 defineComponent({ name: "CategoryPage" });
 
 const bus = inject("bus"); // inside setup()
 const $q = useQuasar();
+const router = useRouter();
 const tree = ref(null);
 
 const select = useSelectStore(); //학년,과목 저장 정보
@@ -147,7 +147,7 @@ const expanded = ref([]); //확장노드 배열
 // const selected = ref(null); //클릭노드
 const ticked = ref([]); //체크 노드
 const editedNode = ref({}); //편집노드
-const questList = ref([]);
+// const questList = ref([]);
 const imgCheck = ref([]);
 
 // const editing = ref({});
@@ -163,7 +163,12 @@ const isspinner = ref(false);
 const exportExcel = function () {
   isspinner.value = true;
   setTimeout(() => (isspinner.value = false), 3000);
-  location.href = `/category/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}`;
+  location.href = `/category/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}&parentCtgId=${currNode.value.id}`;
+};
+
+const importExcel = function () {
+  // location.href = "/#/Category/importCategory";
+  router.push({ path: "/Category/importCategory" });
 };
 
 onMounted(() => {
@@ -185,7 +190,7 @@ const initTree = async function (v1, v2) {
   expanded.value = [data[0].label || ""];
 
   // selected.value = data[0].label;
-
+  currNode.value = data[0];
   bus.emit("Category.clickNode", data[0]);
 };
 
@@ -202,7 +207,7 @@ const clickNode = async function (node, isExtend) {
     //무조건 확장
     tree.value.setExpanded(node.label, true);
   }
-
+  currNode.value = node;
   bus.emit("Category.clickNode", node);
 };
 
