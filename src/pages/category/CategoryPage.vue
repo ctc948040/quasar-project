@@ -58,7 +58,7 @@
                     text-color="white"
                     @click="exportExcel"
                   >
-                    export
+                    내보내기
                   </q-chip>
                   <!-- </a> -->
                   <q-chip
@@ -68,7 +68,7 @@
                     text-color="white"
                     @click="importExcel"
                   >
-                    import
+                    가져오기
                   </q-chip>
                 </q-card-actions>
               </q-list>
@@ -199,6 +199,12 @@ const selectNode = async function (selected, node) {
 };
 
 const clickNode = async function (node, isExtend) {
+  if (!router.currentRoute.value.fullPath.includes("/Category/qstList")) {
+    router.push({ path: "/Category/qstList", query: node });
+  } else {
+    router.push({ path: "/Category/qstList" });
+  }
+
   if (!isExtend) {
     //토글
     tree.value.setExpanded(node.label, true);

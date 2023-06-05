@@ -14,13 +14,15 @@
 
             <q-breadcrumbs-el label="Home" icon="home" />
             <q-breadcrumbs-el label="category" icon="widgets" />
-            <q-item-label header class="q-pa-none">
-              {{
-                !currNode
-                  ? ""
-                  : " [ " + currNode.label + " : 총(" + cnt + ") 건]"
-              }}
-            </q-item-label>
+            <q-breadcrumbs-el>
+              <q-item-label header class="q-pa-none">
+                {{
+                  !currNode
+                    ? ""
+                    : " [ " + currNode.label + " : 총(" + cnt + ") 건]"
+                }}
+              </q-item-label>
+            </q-breadcrumbs-el>
           </q-breadcrumbs>
         </q-item-section>
         <q-item-section side>
@@ -43,7 +45,7 @@
                   <q-item-label>문제 내보내기</q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup @click="importExcel">
                 <q-item-section avatar>
                   <q-avatar
                     icon="arrow_upward"
@@ -55,7 +57,7 @@
                   <q-item-label>문제 가져오기</q-item-label>
                 </q-item-section>
               </q-item>
-              <q-item clickable v-close-popup @click="onItemClick">
+              <q-item clickable v-close-popup @click="1 == 1">
                 <q-item-section avatar>
                   <q-avatar
                     icon="shopping_cart"
@@ -144,10 +146,14 @@
   // max-height: 245px
 </style>
 <script setup>
-import { defineProps, ref, inject } from "vue";
+import { defineProps, ref, inject, onMounted } from "vue";
 import { useSelectStore } from "stores/select";
 import { useCartStore } from "stores/cart";
 import { post, get } from "src/js/com.js";
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
+const route = useRoute();
 const select = useSelectStore(); //학년,과목 저장 정보
 const cart = useCartStore();
 const bus = inject("bus"); // inside setup()
@@ -161,6 +167,20 @@ const cnt = ref(0);
 const currNode = ref(null);
 const offset1 = ref(-1);
 const questList = ref([]);
+
+onMounted(async () => {
+  currNode.value = route.query;
+
+  pageNum.value = 0;
+  questList.value = [];
+  questList.value = await searchQst(currNode.value);
+  console.log("onMounted");
+});
+
+const importExcel = function () {
+  // location.href = "/#/Category/importCategory";
+  router.push({ path: "/Category/importQuestion" });
+};
 
 const exportExcel = function () {
   // setTimeout(() => (isspinner.value = false), 3000);

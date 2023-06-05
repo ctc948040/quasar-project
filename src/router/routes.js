@@ -19,6 +19,10 @@ const routes = [
           path: "importCategory",/*카테고리 import*/
           component: () => import("pages/category/ImportCategoryPage.vue")
         },
+        {
+          path: "importQuestion",/*문제 import*/
+          component: () => import("pages/category/ImportQuestionPage.vue")
+        },
       ]
     }],
   },
