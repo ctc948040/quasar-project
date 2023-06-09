@@ -83,19 +83,19 @@ module.exports = configure(function (ctx) {
       proxy: {
         // /api 및 /api/* 요청에 대해 프록시 설정
             '/category/*': {
-              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              target: 'http://local.ctc94.com:8081/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
             '/file/*': {
-              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              target: 'http://local.ctc94.com:8081/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
             '/question/*': {
-              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              target: 'http://local.ctc94.com:8081/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
             '/basket/*': {
-              target: 'http://local.ctc94.com/', // 프록시를 설정할 도메인
+              target: 'http://local.ctc94.com:8081/', // 프록시를 설정할 도메인
               changeOrigin: true,
             },
           },

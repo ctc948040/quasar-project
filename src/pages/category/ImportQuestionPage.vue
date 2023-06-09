@@ -9,7 +9,7 @@
             </template>
 
             <q-breadcrumbs-el label="Home" icon="home" />
-            <q-breadcrumbs-el label="category" icon="widgets" />
+            <q-breadcrumbs-el label="학습문제" icon="widgets" />
             <q-breadcrumbs-el label="문제 가져오기" />
           </q-breadcrumbs>
         </q-item-section>

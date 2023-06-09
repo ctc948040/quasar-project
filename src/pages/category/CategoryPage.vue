@@ -201,8 +201,6 @@ const selectNode = async function (selected, node) {
 const clickNode = async function (node, isExtend) {
   if (!router.currentRoute.value.fullPath.includes("/Category/qstList")) {
     router.push({ path: "/Category/qstList", query: node });
-  } else {
-    router.push({ path: "/Category/qstList" });
   }
 
   if (!isExtend) {

@@ -1,8 +1,9 @@
 <template>
+  <!-- <q-scroll-area style="height: 100%; width: 100%"> -->
   <div
     class="q-pa-md"
     id="scroll-target-id"
-    style="height: 100%; max-height: 100%; overflow: auto"
+    style="height: 94vh; max-height: 100%; overflow: auto"
   >
     <q-card bordered flat class="q-mb-sm">
       <q-item>
@@ -13,8 +14,8 @@
             </template>
 
             <q-breadcrumbs-el label="Home" icon="home" />
-            <q-breadcrumbs-el label="category" icon="widgets" />
-            <q-breadcrumbs-el>
+            <q-breadcrumbs-el label="학습문제" icon="widgets" />
+            <q-breadcrumbs-el v-if="currNode !== null">
               <q-item-label header class="q-pa-none">
                 {{
                   !currNode
@@ -25,7 +26,7 @@
             </q-breadcrumbs-el>
           </q-breadcrumbs>
         </q-item-section>
-        <q-item-section side>
+        <q-item-section side v-if="selectCategory">
           <q-btn-dropdown
             color="teal-6"
             label="문제관리"
@@ -138,6 +139,7 @@
       </template>
     </q-infinite-scroll>
   </div>
+  <!-- </q-scroll-area> -->
 </template>
 <style lang="sass" scoped>
 .my-card
@@ -167,14 +169,18 @@ const cnt = ref(0);
 const currNode = ref(null);
 const offset1 = ref(-1);
 const questList = ref([]);
+const selectCategory = ref(false);
 
 onMounted(async () => {
-  currNode.value = route.query;
+  console.log("onMounted");
+  if (route.query.ctgId !== undefined) {
+    currNode.value = route.query;
+    selectCategory.value = true;
+  }
 
   pageNum.value = 0;
   questList.value = [];
   questList.value = await searchQst(currNode.value);
-  console.log("onMounted");
 });
 
 const importExcel = function () {
@@ -189,6 +195,7 @@ const exportExcel = function () {
 
 //카테고리 클릭시 호출
 bus.on("Category.clickNode", async (node) => {
+  selectCategory.value = true;
   currNode.value = node;
   pageNum.value = 0;
   questList.value = [];
@@ -196,11 +203,11 @@ bus.on("Category.clickNode", async (node) => {
 });
 
 const searchQst = function (node) {
-  const uri =
-    "/question/selectListQuestion?ctgId=" +
-    node.id +
-    "&pageNum=" +
-    pageNum.value;
+  const param = `?${node === null ? "" : "ctgId=" + node.id + "&"}pageNum=${
+    pageNum.value
+  }&gradeCode=${select.grade}&subjectCode=${select.subject}`;
+
+  const uri = `/question/selectListQuestion${param}`;
   return fetch(uri, { method: "get" })
     .then((response) => response.json())
     .then((response) => {
@@ -217,8 +224,7 @@ const searchQst = function (node) {
 
 //스크롤 아래위치시 문제 로딩 함수
 const onLoad1ByInfiniteScroll = async function (index, done) {
-  if (currNode.value == "") {
-    console.log("currNode is empty");
+  if (offset1.value == -1) {
     return done();
   }
 

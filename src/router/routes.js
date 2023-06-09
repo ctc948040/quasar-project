@@ -2,14 +2,14 @@ const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    children: [{ path: "", component: () => import("pages/category/QstListPage.vue") }],
   },
   {
     path: "/Category",
     component: () => import("layouts/MainLayout.vue"),
     children: [{
       path: "",
-      component: () => import("src/pages/category/CategoryPage.vue") ,
+      component: () => import("pages/category/CategoryPage.vue") ,
 	    children: [
         {
             path: "qstList", /*카테고리별문제리스트*/
