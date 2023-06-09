@@ -182,7 +182,7 @@
 
   <q-dialog v-model="printSettingPop">
     <q-card class="my-card" style="width: 500px">
-      <q-form @submit="onSubmit" class="q-gutter-md">
+      <q-form @submit.once="onSubmit" class="q-gutter-md">
         <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
 
         <q-card-section>
@@ -305,7 +305,7 @@ const popupPrint = function () {
   const param = `?userId=USR11EDFB70738072929BBA0242AC110002&gradeName=${select.gradeName}&subjectName=${select.subjectName}&grade=${select.grade}&subject=${select.subject}&title=${title.value}&distance=${distance.value}`;
   // console.log(param);
   let newWin = window.open(
-    "/#PrintPage" + param,
+    "#/PrintPage" + param,
     "",
     "left=200,top=100,width=1070,height=900,toolbar=0,scrollbars=0,status=0"
   );
