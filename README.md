@@ -1,6 +1,6 @@
 # HSMS App (HSMS-project)
 
-A HSMS Project ctc
+A HSMS Project ctc~~
 
 ## Install the dependencies
 
