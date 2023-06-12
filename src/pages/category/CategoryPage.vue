@@ -134,7 +134,8 @@ import { useRouter } from "vue-router";
 
 defineComponent({ name: "CategoryPage" });
 
-const bus = inject("bus"); // inside setup()
+// const bus = inject("bus"); // inside setup()
+const emitter = inject("emitter"); // inside setup()
 const $q = useQuasar();
 const router = useRouter();
 const tree = ref(null);
@@ -172,17 +173,25 @@ const importExcel = function () {
 };
 
 onMounted(() => {
-  bus.emit("MainLayout.toggleLeftDrawer", false);
+  emitter.emit("MainLayout.toggleLeftDrawer", false);
+
+  // const callBackfn1 = async (node) => {
+  //   console.log("category : Category.clickNode called");
+  // };
+  // emitter.on("Category.clickNode", callBackfn1);
+
+  router.push({ path: "/Category/qstList" });
 });
 
 //상단 학년, 과목에서 호출됨
-bus.on("MainLayout.initTree", (grade, subject) => {
+emitter.on("MainLayout.chageSelect", function chageSelect2(grade, subject) {
+  console.log("categoryPage", "MainLayout.chageSelect");
   initTree(grade, subject);
 });
 
 const initTree = async function (v1, v2) {
   // var m = treeData[v1] || {};
-  console.log(v1, v2);
+  // console.log(v1, v2);
 
   var data = await fetchCategory("", v1, v2);
 
@@ -191,7 +200,7 @@ const initTree = async function (v1, v2) {
 
   // selected.value = data[0].label;
   currNode.value = data[0];
-  bus.emit("Category.clickNode", data[0]);
+  emitter.emit("Category.clickNode", currNode.value);
 };
 
 const selectNode = async function (selected, node) {
@@ -200,19 +209,23 @@ const selectNode = async function (selected, node) {
 
 const clickNode = async function (node, isExtend) {
   if (!router.currentRoute.value.fullPath.includes("/Category/qstList")) {
-    router.push({ path: "/Category/qstList", query: node });
+    router.push({ path: "/Category/qstList" });
   }
 
-  if (!isExtend) {
-    //토글
-    tree.value.setExpanded(node.label, true);
-    //tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
-  } else {
-    //무조건 확장
-    tree.value.setExpanded(node.label, true);
-  }
-  currNode.value = node;
-  bus.emit("Category.clickNode", node);
+  setTimeout(() => {
+    if (!isExtend) {
+      //토글
+      tree.value.setExpanded(node.label, true);
+      //tree.value.setExpanded(node.label, !tree.value.isExpanded(node.label));
+    } else {
+      //무조건 확장
+      tree.value.setExpanded(node.label, true);
+    }
+    currNode.value = node;
+    // bus.off("Category.clickNode", node);
+    // bus.emit("Category.clickNode", node);
+    emitter.emit("Category.clickNode", node);
+  }, 100);
 };
 
 function fetchCategory(id, grade, subject) {
@@ -231,27 +244,13 @@ function fetchCategory(id, grade, subject) {
     });
 }
 
-//이벤트 버스 사용 예제
-bus.on("some-event", (arg1, arg2, arg3) => {
-  console.log(arg1, arg2, arg3);
-});
-
 const deleteNode = function (node) {
   //delete node;
-  console.log("treeList", treeList.value);
-  console.log("deleteNode", node);
+  // console.log("treeList", treeList.value);
+  // console.log("deleteNode", node);
 };
 
 initTree(select.grade, select.subject); //트리 데이터 초기화
-
-//학년 선택박스 update 이벤트
-const updateSelect = function (v) {
-  initTree(v.id, select.subject);
-};
-//과목 선택박스 update 이벤트
-const updateSubjectSelect = function (v) {
-  initTree(select.grade, v.id);
-};
 
 const send = function () {
   // jQuery("#node_div").hide();

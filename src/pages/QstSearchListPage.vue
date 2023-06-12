@@ -148,30 +148,17 @@
   // max-height: 245px
 </style>
 <script setup>
-import {
-  defineProps,
-  ref,
-  inject,
-  onMounted,
-  onBeforeUnmount,
-  onBeforeMount,
-  defineComponent,
-  getCurrentInstance,
-} from "vue";
+import { defineProps, ref, inject, onMounted } from "vue";
 import { useSelectStore } from "stores/select";
 import { useCartStore } from "stores/cart";
 import { post, get } from "src/js/com.js";
 import { useRouter, useRoute } from "vue-router";
 
-const { proxy } = getCurrentInstance();
-
 const router = useRouter();
 const route = useRoute();
 const select = useSelectStore(); //학년,과목 저장 정보
 const cart = useCartStore();
-// const bus = inject("bus"); // inside setup()
-const emitter = inject("emitter"); // inside setup()
-// const emitter = mitt();
+// const emitter = inject("emitter"); // inside setup()
 
 const props = defineProps(["selected"]);
 
@@ -184,33 +171,16 @@ const offset1 = ref(-1);
 const questList = ref([]);
 const selectCategory = ref(false);
 
-// onBeforeMount(() => {
-//   console.log("onBeforeMount");
-//   // emitter.off("Category.clickNode", callBackfn);//버스를 사용하기 위해서는 off
-// });
-
 onMounted(async () => {
   console.log("onMounted");
-
-  const callBackfn = async (node) => {
+  if (route.query.ctgId !== undefined) {
+    currNode.value = route.query;
     selectCategory.value = true;
-    currNode.value = node;
-    pageNum.value = 0;
-    questList.value = [];
-    questList.value = await searchQst(node);
-  };
+  }
 
-  //카테고리 클릭시 호출
-  emitter.on("Category.clickNode", callBackfn);
-
-  // if (route.query.ctgId !== undefined) {
-  //   currNode.value = route.query;
-  //   selectCategory.value = true;
-  // }
-
-  // pageNum.value = 0;
-  // questList.value = [];
-  // questList.value = await searchQst(currNode.value);
+  pageNum.value = 0;
+  questList.value = [];
+  questList.value = await searchQst(currNode.value);
 });
 
 const importExcel = function () {
@@ -239,7 +209,6 @@ const searchQst = function (node) {
       pageNum.value += response.data.length;
       offset1.value = 0;
       cnt.value = response.data[0].cnt;
-
       return response.data;
     });
 };

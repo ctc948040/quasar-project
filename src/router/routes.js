@@ -1,8 +1,11 @@
+
+import QstListPage from "pages/category/QstListPage.vue";
+
 const routes = [
   {
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
-    children: [{ path: "", component: () => import("pages/category/QstListPage.vue") }],
+    children: [{ path: "", component: () => import("src/pages/QstSearchListPage.vue") }],
   },
   {
     path: "/Category",
@@ -13,7 +16,7 @@ const routes = [
 	    children: [
         {
             path: "qstList", /*카테고리별문제리스트*/
-            component: () => import("pages/category/QstListPage.vue")
+            component: () => QstListPage
         },
         {
           path: "importCategory",/*카테고리 import*/

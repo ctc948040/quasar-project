@@ -182,7 +182,7 @@
 
   <q-dialog v-model="printSettingPop">
     <q-card class="my-card" style="width: 500px">
-      <q-form @submit.once="onSubmit" class="q-gutter-md">
+      <q-form @submit.prevent="onSubmit" class="q-gutter-md">
         <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
 
         <q-card-section>
@@ -290,7 +290,8 @@ const distance = ref(100);
 
 const onSubmit = function () {
   // $q.notify({
-  //   color: "red-5",
+  //   // color: "red-5",
+  //   position: "top-left",
   //   textColor: "white",
   //   icon: "warning",
   //   message: "You need to accept the license and terms first",

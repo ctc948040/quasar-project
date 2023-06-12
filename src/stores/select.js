@@ -5,7 +5,7 @@ import { defineStore } from 'pinia';
 
 export const useSelectStore = defineStore('select', () => {
 
-    const bus = inject("bus"); // inside setup()
+    const emitter = inject("emitter"); // inside setup()
     const  gradeItems = ref([]);
     const  subjectItems  = ref([]);
     const  selectedGrade = ref({ id: "COMGRDM2", desc: "중2" });
@@ -27,7 +27,7 @@ export const useSelectStore = defineStore('select', () => {
       //console.info(subjectItems.value);
     };
     function updateSelect() {
-      bus.emit("MainLayout.initTree", this.selectedGrade.id,this.selectedSubject.id);
+      emitter.emit("MainLayout.chageSelect", this.selectedGrade.id,this.selectedSubject.id);
     };
 
     return {

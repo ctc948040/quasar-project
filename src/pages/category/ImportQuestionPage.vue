@@ -70,7 +70,7 @@
 import { defineProps, ref, inject } from "vue";
 import { useSelectStore } from "stores/select";
 const select = useSelectStore(); //학년,과목 저장 정보
-const bus = inject("bus"); // inside setup()
+const emitter = inject("emitter"); // inside setup()
 
 const factoryFn = function (files) {
   return {
@@ -83,6 +83,5 @@ const tableList = ref([]);
 
 const uploaded = function (info) {
   tableList.value = JSON.parse(info.xhr.response).data;
-  // bus.emit("MainLayout.initTree", select.grade, select.subject);
 };
 </script>

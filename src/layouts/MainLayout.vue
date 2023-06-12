@@ -139,7 +139,7 @@ const fixedPopup = ref();
 cart.fill(select.grade, select.subject);
 
 const leftDrawerOpen = ref(false);
-const bus = inject("bus"); // inside setup()
+const emitter = inject("emitter"); // inside setup()
 const activeMenu = ref({ menu: "home" }); //active menu
 
 const basketList = ref([]); //문제바구니 리스트
@@ -152,17 +152,17 @@ const showDialog = function () {};
 // console.log(cart.count);
 
 //왼편메뉴 토글 호출
-bus.on("MainLayout.toggleLeftDrawer", (arg1) => {
+emitter.on("MainLayout.toggleLeftDrawer", function toggleLeftDrawer(arg1) {
   leftDrawerOpen.value = arg1;
 });
 
 //상단 학년, 과목에서 호출됨
-bus.on("MainLayout.initTree", (grade, subject) => {
+emitter.on("MainLayout.chageSelect", function chageSelect(grade, subject) {
   cart.fill(select.grade, select.subject);
 });
 
 //문제바구니에 담기
-bus.on("MainLayout.addBasket", (item) => {
+emitter.on("MainLayout.addBasket", function addBasket(item) {
   let isItem = basketList.value.findIndex(function (element) {
     // console.info(element.qstId, item.qstId);
     if (element.qstId == item.qstId) {
