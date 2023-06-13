@@ -206,7 +206,7 @@ const initTree = async function (v1, v2) {
   // var m = treeData[v1] || {};
   // console.log(v1, v2);
 
-  var data = await fetchCategory("", v1, v2);
+  var data = await searchCategory("", v1, v2);
 
   treeList.value = data || [];
   expanded.value = [data[0].label || ""];
@@ -241,20 +241,22 @@ const clickNode = async function (node, isExtend) {
   }, 200);
 };
 
-function fetchCategory(id, grade, subject) {
+function searchCategory(id, grade, subject) {
   let parentCtgId = id ? "&parentCtgId=" + id : "";
 
-  const uri =
-    "/category/selectListCategory?gradeCode=" +
-    grade +
-    "&subjectCode=" +
-    subject +
-    parentCtgId; // 'http://localhost:8080/api' 로 작성 시 프록시 적용 X
-  return fetch(uri, { method: "get" })
-    .then((response) => response.json())
-    .then((response) => {
-      return response.data;
-    });
+  const uri = "/category/selectListCategory";
+
+  let body = {
+    parentCtgId: id ? id : null,
+    gradeCode: select.grade,
+    subjectCode: select.subject,
+  };
+
+  return get(uri, body)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => console.log(error));
 }
 
 const deleteNode = function (node) {
@@ -270,7 +272,7 @@ const send = function () {
 };
 
 const onLazyLoad = async function ({ node, key, done, fail }) {
-  var data = await fetchCategory(node.id, select.grade, select.subject);
+  var data = await searchCategory(node.id, select.grade, select.subject);
 
   done(data);
 };

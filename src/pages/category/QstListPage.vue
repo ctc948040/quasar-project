@@ -229,24 +229,32 @@ const exportExcel = function () {
 };
 
 const searchQst = function (node) {
-  const param = `?${node === null ? "" : "ctgId=" + node.id + "&"}pageNum=${
-    pageNum.value
-  }&gradeCode=${select.grade}&subjectCode=${select.subject}`;
+  // const param = `?${node === null ? "" : "ctgId=" + node.id + "&"}pageNum=${
+  //   pageNum.value
+  // }&gradeCode=${select.grade}&subjectCode=${select.subject}`;
 
-  const uri = `/question/selectListQuestion${param}`;
-  return fetch(uri, { method: "get" })
-    .then((response) => response.json())
-    .then((response) => {
-      if (response.data == null) {
+  const uri = `/question/selectListQuestion`;
+
+  let body = {
+    ctgId: node === null ? null : node.id,
+    gradeCode: select.grade,
+    subjectCode: select.subject,
+    pageNum: pageNum.value,
+  };
+
+  return get(uri, body)
+    .then((res) => {
+      if (res.data == null) {
         cnt.value = questList.value.length;
         return [];
       }
-      pageNum.value += response.data.length;
+      pageNum.value += res.data.length;
       offset1.value = 0;
-      cnt.value = response.data[0].cnt;
+      cnt.value = res.data[0].cnt;
 
-      return response.data;
-    });
+      return res.data;
+    })
+    .catch((error) => console.log(error));
 };
 
 //스크롤 아래위치시 문제 로딩 함수
