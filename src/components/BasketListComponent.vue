@@ -300,12 +300,14 @@ const onSubmit = function () {
   popupPrint(title.value, distance.value);
 
   printSettingPop.value = false;
+
+  return false;
 };
 
 const popupPrint = function () {
   const param = `?userId=USR11EDFB70738072929BBA0242AC110002&gradeName=${select.gradeName}&subjectName=${select.subjectName}&grade=${select.grade}&subject=${select.subject}&title=${title.value}&distance=${distance.value}`;
   // console.log(param);
-  let newWin = window.open(
+  window.open(
     "#/PrintPage" + param,
     "",
     "left=200,top=100,width=1070,height=900,toolbar=0,scrollbars=0,status=0"
