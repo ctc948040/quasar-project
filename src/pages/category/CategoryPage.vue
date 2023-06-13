@@ -45,31 +45,38 @@
                     :href="`/category/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}`"
                   > -->
                   <!-- <a @click="exportExcel"> -->
-                  <q-spinner-dots
+                  <!-- <q-spinner-dots
                     color="primary"
                     size="3em"
                     :thickness="2"
                     v-if="isspinner"
-                  />
-                  <q-chip
-                    clickable
+                  /> -->
+                  <q-btn
+                    rounded
+                    dense
+                    unelevated
+                    align="around"
                     icon="arrow_upward"
                     color="teal-6"
                     text-color="white"
                     @click="exportExcel"
+                    :loading="isspinner"
                   >
                     내보내기
-                  </q-chip>
+                  </q-btn>
                   <!-- </a> -->
-                  <q-chip
-                    clickable
+                  <q-btn
+                    rounded
+                    dense
+                    unelevated
+                    align="around"
                     icon="arrow_downward"
                     color="teal-6"
                     text-color="white"
                     @click="importExcel"
                   >
                     가져오기
-                  </q-chip>
+                  </q-btn>
                 </q-card-actions>
               </q-list>
               <q-tree
