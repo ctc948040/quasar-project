@@ -288,30 +288,26 @@ const printSettingPop = ref(false);
 const title = ref("");
 const distance = ref(100);
 
-const onSubmit = function (e) {
-  console.log(e);
-  e.preventDefault();
-  // $q.notify({
-  //   // color: "red-5",
-  //   position: "top-left",
-  //   textColor: "white",
-  //   icon: "warning",
-  //   message: "You need to accept the license and terms first",
-  // });
+// const myForm = ref();
+
+const onSubmit = function (evt) {
+  // console.log(evt);
 
   popupPrint(title.value, distance.value);
 
   printSettingPop.value = false;
-
-  return false;
+  const param = `?userId=USR11EDFB70738072929BBA0242AC110002&gradeName=${select.gradeName}&subjectName=${select.subjectName}&grade=${select.grade}&subject=${select.subject}&title=${title.value}&distance=${distance.value}`;
+  evt.target.action = "#/PrintPage" + param;
+  evt.target.target = "newWin1";
+  evt.target.method = "get";
+  evt.target.submit();
 };
 
 const popupPrint = function () {
-  const param = `?userId=USR11EDFB70738072929BBA0242AC110002&gradeName=${select.gradeName}&subjectName=${select.subjectName}&grade=${select.grade}&subject=${select.subject}&title=${title.value}&distance=${distance.value}`;
   // console.log(param);
   window.open(
-    "#/PrintPage" + param,
     "",
+    "newWin1",
     "left=200,top=100,width=1070,height=900,toolbar=0,scrollbars=0,status=0"
   );
 };
