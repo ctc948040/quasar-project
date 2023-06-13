@@ -225,7 +225,7 @@ const clickNode = async function (node, isExtend) {
     // bus.off("Category.clickNode", node);
     // bus.emit("Category.clickNode", node);
     emitter.emit("Category.clickNode", node);
-  }, 500);
+  }, 200);
 };
 
 function fetchCategory(id, grade, subject) {
