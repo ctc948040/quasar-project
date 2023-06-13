@@ -32,7 +32,9 @@
             label="문제관리"
             dropdown-icon="more_vert"
             outline
+            :loading="loading"
           >
+            <!-- <template v-slot:loading> Loading... </template> -->
             <q-list>
               <q-item clickable v-close-popup @click="exportExcel">
                 <q-item-section avatar>
@@ -183,6 +185,7 @@ const currNode = ref(null);
 const offset1 = ref(-1);
 const questList = ref([]);
 const selectCategory = ref(false);
+const loading = ref(false);
 
 // onBeforeMount(() => {
 //   console.log("onBeforeMount");
@@ -220,7 +223,9 @@ const importExcel = function () {
 
 const exportExcel = function () {
   // setTimeout(() => (isspinner.value = false), 3000);
+  loading.value = true;
   location.href = `/question/export-to-excel?gradeCode=${select.grade}&subjectCode=${select.subject}&ctgId=${currNode.value.id}`;
+  setTimeout(() => (loading.value = false), 10000);
 };
 
 const searchQst = function (node) {
