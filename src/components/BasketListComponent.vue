@@ -182,7 +182,7 @@
 
   <q-dialog v-model="printSettingPop">
     <q-card class="my-card" style="width: 500px">
-      <q-form @submit.stop.prevent="onSubmit" class="q-gutter-md">
+      <q-form @submit.prevent="onSubmit" class="q-gutter-md">
         <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
 
         <q-card-section>
@@ -288,7 +288,9 @@ const printSettingPop = ref(false);
 const title = ref("");
 const distance = ref(100);
 
-const onSubmit = function () {
+const onSubmit = function (e) {
+  console.log(e);
+  e.preventDefault();
   // $q.notify({
   //   // color: "red-5",
   //   position: "top-left",
