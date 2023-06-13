@@ -182,7 +182,7 @@
 
   <q-dialog v-model="printSettingPop">
     <q-card class="my-card" style="width: 500px">
-      <q-form @submit.prevent="onSubmit" class="q-gutter-md">
+      <q-form @submit.stop.prevent="onSubmit" class="q-gutter-md">
         <!-- <q-img src="https://cdn.quasar.dev/img/chicken-salad.jpg" /> -->
 
         <q-card-section>
