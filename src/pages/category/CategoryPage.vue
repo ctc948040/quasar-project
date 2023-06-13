@@ -180,7 +180,7 @@ onMounted(() => {
   // };
   // emitter.on("Category.clickNode", callBackfn1);
 
-  router.push({ path: "/Category/qstList" });
+  // router.push({ path: "/Category/qstList" });
 });
 
 //상단 학년, 과목에서 호출됨

@@ -11,7 +11,7 @@
     "title": "카테고리 & 문제 관리",
     "caption": "카테고리및 문제를 관리합니다.",
     "icon": "school",
-    "link": "#/Category",
+    "link": "#/Category/qstList",
     "target": "_self",
     "name": "category"
   },
