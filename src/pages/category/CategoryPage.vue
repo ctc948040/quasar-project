@@ -61,6 +61,7 @@
                     text-color="white"
                     @click="exportExcel"
                     :loading="isspinner"
+                    class="btn-fixed-width"
                   >
                     내보내기
                   </q-btn>
@@ -74,6 +75,7 @@
                     color="teal-6"
                     text-color="white"
                     @click="importExcel"
+                    class="btn-fixed-width"
                   >
                     가져오기
                   </q-btn>
@@ -121,6 +123,10 @@
   </div>
   <!-- <button type="button" @click="myClickEvent" ref="myBtn">Click Me!</button> -->
 </template>
+<style lang="sass" scoped>
+.btn-fixed-width
+  width: 120px
+</style>
 
 <script setup>
 import {
