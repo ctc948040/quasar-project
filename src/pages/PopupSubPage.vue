@@ -1,1 +1,3 @@
-<template>subPage</template>
+<template>
+subPage2
+</template>
