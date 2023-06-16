@@ -154,11 +154,12 @@ import { useCartStore } from "stores/cart";
 import { post, get, echo } from "src/js/com.js";
 import { useRouter, useRoute } from "vue-router";
 
+const emitter = inject("emitter"); // inside setup()
+
 const router = useRouter();
 const route = useRoute();
 const select = useSelectStore(); //학년,과목 저장 정보
 const cart = useCartStore();
-// const emitter = inject("emitter"); // inside setup()
 
 const props = defineProps(["selected"]);
 
@@ -178,9 +179,17 @@ onMounted(async () => {
     selectCategory.value = true;
   }
 
-  pageNum.value = 0;
-  questList.value = [];
-  questList.value = await searchQst(currNode.value);
+  const chageSelect3 = async function () {
+    console.log("QstSearchListPage", "MainLayout.chageSelect");
+    pageNum.value = 0;
+    questList.value = [];
+    questList.value = await searchQst(currNode.value);
+  };
+  //학습문제 리스트 출력
+  chageSelect3();
+
+  //상단 학년, 과목에서 호출됨
+  emitter.on("MainLayout.chageSelect", chageSelect3);
 });
 
 const importExcel = function () {

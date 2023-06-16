@@ -27,7 +27,7 @@ E.prototype = {
       ctx: ctx
     });
 
-    console.log(e[name]);
+    // console.log(e[name]);
 
     return this;
   },
