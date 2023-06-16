@@ -158,6 +158,7 @@ emitter.on("MainLayout.toggleLeftDrawer", function toggleLeftDrawer(arg1) {
 
 //상단 학년, 과목에서 호출됨
 emitter.on("MainLayout.chageSelect", function chageSelect(grade, subject) {
+  console.log("MainLayoutPage", "MainLayout.chageSelect");
   cart.fill(select.grade, select.subject);
 });
 
