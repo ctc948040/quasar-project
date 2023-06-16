@@ -156,11 +156,13 @@ emitter.on("MainLayout.toggleLeftDrawer", function toggleLeftDrawer(arg1) {
   leftDrawerOpen.value = arg1;
 });
 
-//상단 학년, 과목에서 호출됨
-emitter.on("MainLayout.chageSelect", function chageSelect(grade, subject) {
+const chageSelect = function (grade, subject) {
   console.log("MainLayoutPage", "MainLayout.chageSelect");
   cart.fill(select.grade, select.subject);
-});
+};
+
+//상단 학년, 과목에서 호출됨
+emitter.on("MainLayout.chageSelect", chageSelect);
 
 //문제바구니에 담기
 emitter.on("MainLayout.addBasket", function addBasket(item) {

@@ -196,11 +196,13 @@ onMounted(() => {
   // router.push({ path: "/Category/qstList" });
 });
 
-//상단 학년, 과목에서 호출됨
-emitter.on("MainLayout.chageSelect", function chageSelect2(grade, subject) {
+const chageSelect2 = function (grade, subject) {
   console.log("categoryPage", "MainLayout.chageSelect");
   initTree(grade, subject);
-});
+};
+
+//상단 학년, 과목에서 호출됨
+emitter.on("MainLayout.chageSelect", chageSelect2);
 
 const initTree = async function (v1, v2) {
   // var m = treeData[v1] || {};
