@@ -88,7 +88,7 @@
               style="min-width: 680px; max-width: 750px"
             >
               <q-item-section avatar>
-                <q-avatar rounded flat icon="menu" />
+                <q-avatar rounded flat icon="drag_handle" />
               </q-item-section>
               <div style="width: 150px" class="q-mr-sm">
                 <q-img
